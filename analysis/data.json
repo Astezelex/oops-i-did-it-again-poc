@@ -1,0 +1,509 @@
+{
+ "install_date": "2026-08-28",
+ "generated_from": "~/.claude/projects/*/*.jsonl",
+ "totals": {
+  "commands": 9222,
+  "commands_excluded_as_meta": 209,
+  "days": 28,
+  "first_day": "2026-08-04",
+  "last_day": "2026-09-03"
+ },
+ "period_totals": {
+  "after": 3105,
+  "before": 6117
+ },
+ "headline": {
+  "rules_counted": [
+   "r_catastrophic",
+   "r_config_guard",
+   "r_cuda_without_gpus",
+   "r_delete_before_verify",
+   "r_git_safety",
+   "r_package_install",
+   "r_pipe_masks_exit_code",
+   "r_secret_exposure",
+   "r_stderr_discarded",
+   "r_time_based_delete"
+  ],
+  "note": "only the ten rules that existed on the install date, so the metric does not change shape mid-series",
+  "before_commands": 6117,
+  "after_commands": 3105,
+  "before_flagged": 610,
+  "after_flagged": 230
+ },
+ "daily": [
+  {
+   "date": "2026-08-04",
+   "commands": 464,
+   "flagged_commands": 31,
+   "rate_per_100": 6.68
+  },
+  {
+   "date": "2026-08-05",
+   "commands": 314,
+   "flagged_commands": 31,
+   "rate_per_100": 9.87
+  },
+  {
+   "date": "2026-08-06",
+   "commands": 335,
+   "flagged_commands": 20,
+   "rate_per_100": 5.97
+  },
+  {
+   "date": "2026-08-08",
+   "commands": 197,
+   "flagged_commands": 14,
+   "rate_per_100": 7.11
+  },
+  {
+   "date": "2026-08-09",
+   "commands": 361,
+   "flagged_commands": 54,
+   "rate_per_100": 14.96
+  },
+  {
+   "date": "2026-08-10",
+   "commands": 349,
+   "flagged_commands": 34,
+   "rate_per_100": 9.74
+  },
+  {
+   "date": "2026-08-11",
+   "commands": 302,
+   "flagged_commands": 22,
+   "rate_per_100": 7.28
+  },
+  {
+   "date": "2026-08-13",
+   "commands": 41,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-08-14",
+   "commands": 42,
+   "flagged_commands": 5,
+   "rate_per_100": 11.9
+  },
+  {
+   "date": "2026-08-15",
+   "commands": 154,
+   "flagged_commands": 22,
+   "rate_per_100": 14.29
+  },
+  {
+   "date": "2026-08-16",
+   "commands": 95,
+   "flagged_commands": 5,
+   "rate_per_100": 5.26
+  },
+  {
+   "date": "2026-08-17",
+   "commands": 95,
+   "flagged_commands": 13,
+   "rate_per_100": 13.68
+  },
+  {
+   "date": "2026-08-19",
+   "commands": 462,
+   "flagged_commands": 31,
+   "rate_per_100": 6.71
+  },
+  {
+   "date": "2026-08-20",
+   "commands": 611,
+   "flagged_commands": 70,
+   "rate_per_100": 11.46
+  },
+  {
+   "date": "2026-08-21",
+   "commands": 273,
+   "flagged_commands": 23,
+   "rate_per_100": 8.42
+  },
+  {
+   "date": "2026-08-22",
+   "commands": 149,
+   "flagged_commands": 15,
+   "rate_per_100": 10.07
+  },
+  {
+   "date": "2026-08-23",
+   "commands": 587,
+   "flagged_commands": 49,
+   "rate_per_100": 8.35
+  },
+  {
+   "date": "2026-08-24",
+   "commands": 473,
+   "flagged_commands": 73,
+   "rate_per_100": 15.43
+  },
+  {
+   "date": "2026-08-25",
+   "commands": 213,
+   "flagged_commands": 10,
+   "rate_per_100": 4.69
+  },
+  {
+   "date": "2026-08-26",
+   "commands": 282,
+   "flagged_commands": 65,
+   "rate_per_100": 23.05
+  },
+  {
+   "date": "2026-08-27",
+   "commands": 318,
+   "flagged_commands": 23,
+   "rate_per_100": 7.23
+  },
+  {
+   "date": "2026-08-28",
+   "commands": 577,
+   "flagged_commands": 53,
+   "rate_per_100": 9.19
+  },
+  {
+   "date": "2026-08-29",
+   "commands": 197,
+   "flagged_commands": 6,
+   "rate_per_100": 3.05
+  },
+  {
+   "date": "2026-08-30",
+   "commands": 412,
+   "flagged_commands": 55,
+   "rate_per_100": 13.35
+  },
+  {
+   "date": "2026-08-31",
+   "commands": 486,
+   "flagged_commands": 39,
+   "rate_per_100": 8.02
+  },
+  {
+   "date": "2026-09-01",
+   "commands": 543,
+   "flagged_commands": 36,
+   "rate_per_100": 6.63
+  },
+  {
+   "date": "2026-09-02",
+   "commands": 545,
+   "flagged_commands": 32,
+   "rate_per_100": 5.87
+  },
+  {
+   "date": "2026-09-03",
+   "commands": 345,
+   "flagged_commands": 9,
+   "rate_per_100": 2.61
+  }
+ ],
+ "per_rule": {
+  "r_arbitrary_row_from_listing": {
+   "born": "2026-09-02",
+   "before": 63,
+   "after": 0,
+   "before_commands": 8332,
+   "after_commands": 890,
+   "before_per_100": 0.756,
+   "after_per_100": 0.0
+  },
+  "r_catastrophic": {
+   "born": "2026-08-28",
+   "before": 4,
+   "after": 1,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.065,
+   "after_per_100": 0.032
+  },
+  "r_config_guard": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 1,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.0,
+   "after_per_100": 0.032
+  },
+  "r_cuda_without_gpus": {
+   "born": "2026-08-28",
+   "before": 36,
+   "after": 6,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.589,
+   "after_per_100": 0.193
+  },
+  "r_delete_before_verify": {
+   "born": "2026-08-28",
+   "before": 16,
+   "after": 16,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.262,
+   "after_per_100": 0.515
+  },
+  "r_empty_grep_as_absence": {
+   "born": "2026-09-02",
+   "before": 55,
+   "after": 4,
+   "before_commands": 8332,
+   "after_commands": 890,
+   "before_per_100": 0.66,
+   "after_per_100": 0.449
+  },
+  "r_git_safety": {
+   "born": "2026-08-28",
+   "before": 2,
+   "after": 3,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.033,
+   "after_per_100": 0.097
+  },
+  "r_guessed_unit_candidates": {
+   "born": "2026-09-02",
+   "before": 54,
+   "after": 9,
+   "before_commands": 8332,
+   "after_commands": 890,
+   "before_per_100": 0.648,
+   "after_per_100": 1.011
+  },
+  "r_measurement_silenced": {
+   "born": "2026-08-30",
+   "before": 3,
+   "after": 2,
+   "before_commands": 6891,
+   "after_commands": 2331,
+   "before_per_100": 0.044,
+   "after_per_100": 0.086
+  },
+  "r_package_install": {
+   "born": "2026-08-28",
+   "before": 48,
+   "after": 7,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.785,
+   "after_per_100": 0.225
+  },
+  "r_pipe_masks_exit_code": {
+   "born": "2026-08-28",
+   "before": 167,
+   "after": 53,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 2.73,
+   "after_per_100": 1.707
+  },
+  "r_secret_exposure": {
+   "born": "2026-08-28",
+   "before": 6,
+   "after": 1,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.098,
+   "after_per_100": 0.032
+  },
+  "r_stderr_discarded": {
+   "born": "2026-08-28",
+   "before": 357,
+   "after": 153,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 5.836,
+   "after_per_100": 4.928
+  },
+  "r_time_based_delete": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 5,
+   "before_commands": 6117,
+   "after_commands": 3105,
+   "before_per_100": 0.0,
+   "after_per_100": 0.161
+  }
+ },
+ "per_rule_daily": {
+  "r_arbitrary_row_from_listing": {
+   "2026-08-31": 7,
+   "2026-08-11": 1,
+   "2026-08-24": 1,
+   "2026-08-25": 15,
+   "2026-08-17": 7,
+   "2026-09-01": 1,
+   "2026-08-27": 1,
+   "2026-08-05": 1,
+   "2026-08-20": 3,
+   "2026-08-26": 4,
+   "2026-08-28": 2,
+   "2026-08-29": 5,
+   "2026-08-10": 1,
+   "2026-08-22": 2,
+   "2026-08-23": 4,
+   "2026-08-19": 5,
+   "2026-08-06": 1,
+   "2026-08-21": 2
+  },
+  "r_catastrophic": {
+   "2026-08-24": 2,
+   "2026-08-28": 1,
+   "2026-08-23": 2
+  },
+  "r_config_guard": {
+   "2026-09-03": 1
+  },
+  "r_cuda_without_gpus": {
+   "2026-08-27": 1,
+   "2026-08-28": 6,
+   "2026-08-23": 10,
+   "2026-08-19": 11,
+   "2026-08-20": 6,
+   "2026-08-24": 8
+  },
+  "r_delete_before_verify": {
+   "2026-08-24": 2,
+   "2026-08-04": 1,
+   "2026-08-30": 8,
+   "2026-08-28": 5,
+   "2026-08-29": 1,
+   "2026-08-20": 4,
+   "2026-08-14": 1,
+   "2026-08-15": 8,
+   "2026-09-02": 1,
+   "2026-09-03": 1
+  },
+  "r_empty_grep_as_absence": {
+   "2026-08-10": 3,
+   "2026-08-24": 4,
+   "2026-08-05": 4,
+   "2026-08-30": 11,
+   "2026-08-27": 9,
+   "2026-08-09": 2,
+   "2026-08-26": 1,
+   "2026-08-28": 1,
+   "2026-08-04": 4,
+   "2026-08-23": 5,
+   "2026-08-19": 1,
+   "2026-08-06": 6,
+   "2026-08-21": 2,
+   "2026-08-20": 2,
+   "2026-09-02": 4
+  },
+  "r_git_safety": {
+   "2026-08-28": 1,
+   "2026-08-30": 2,
+   "2026-08-23": 2
+  },
+  "r_guessed_unit_candidates": {
+   "2026-09-01": 5,
+   "2026-08-24": 6,
+   "2026-08-25": 2,
+   "2026-08-05": 2,
+   "2026-08-30": 12,
+   "2026-08-31": 2,
+   "2026-08-11": 1,
+   "2026-08-20": 3,
+   "2026-08-28": 2,
+   "2026-09-03": 5,
+   "2026-08-10": 4,
+   "2026-08-16": 1,
+   "2026-08-23": 3,
+   "2026-08-06": 6,
+   "2026-08-21": 5,
+   "2026-09-02": 4
+  },
+  "r_measurement_silenced": {
+   "2026-08-30": 2,
+   "2026-08-27": 1,
+   "2026-08-28": 2
+  },
+  "r_package_install": {
+   "2026-08-11": 1,
+   "2026-08-04": 13,
+   "2026-08-05": 6,
+   "2026-09-01": 3,
+   "2026-08-10": 2,
+   "2026-08-20": 2,
+   "2026-08-09": 1,
+   "2026-08-25": 2,
+   "2026-08-28": 2,
+   "2026-08-22": 1,
+   "2026-08-23": 6,
+   "2026-08-19": 2,
+   "2026-08-06": 2,
+   "2026-08-21": 8,
+   "2026-08-14": 1,
+   "2026-08-08": 1,
+   "2026-09-03": 2
+  },
+  "r_pipe_masks_exit_code": {
+   "2026-08-11": 5,
+   "2026-08-15": 2,
+   "2026-09-01": 3,
+   "2026-08-24": 16,
+   "2026-08-25": 3,
+   "2026-08-04": 8,
+   "2026-08-17": 1,
+   "2026-08-30": 9,
+   "2026-08-31": 1,
+   "2026-08-10": 7,
+   "2026-08-27": 12,
+   "2026-08-05": 1,
+   "2026-08-20": 12,
+   "2026-08-09": 2,
+   "2026-08-26": 58,
+   "2026-08-28": 21,
+   "2026-08-29": 3,
+   "2026-08-21": 8,
+   "2026-08-16": 1,
+   "2026-08-23": 4,
+   "2026-08-19": 11,
+   "2026-08-06": 11,
+   "2026-08-14": 3,
+   "2026-09-02": 12,
+   "2026-08-08": 2,
+   "2026-09-03": 4
+  },
+  "r_secret_exposure": {
+   "2026-08-15": 6,
+   "2026-08-28": 1
+  },
+  "r_stderr_discarded": {
+   "2026-08-31": 38,
+   "2026-08-24": 49,
+   "2026-08-10": 25,
+   "2026-08-11": 17,
+   "2026-08-15": 6,
+   "2026-08-16": 4,
+   "2026-09-01": 30,
+   "2026-08-25": 5,
+   "2026-08-04": 11,
+   "2026-08-05": 24,
+   "2026-08-17": 12,
+   "2026-08-30": 37,
+   "2026-08-27": 11,
+   "2026-08-06": 7,
+   "2026-08-20": 46,
+   "2026-08-09": 51,
+   "2026-08-26": 19,
+   "2026-08-28": 23,
+   "2026-08-29": 3,
+   "2026-08-22": 14,
+   "2026-08-23": 29,
+   "2026-08-19": 7,
+   "2026-08-21": 9,
+   "2026-09-02": 20,
+   "2026-08-08": 11,
+   "2026-09-03": 2
+  },
+  "r_time_based_delete": {
+   "2026-08-28": 5
+  }
+ }
+}

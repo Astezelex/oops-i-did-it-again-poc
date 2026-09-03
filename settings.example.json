@@ -1,0 +1,40 @@
+{
+  "_comment": "Merge these blocks into ~/.claude/settings.json (user scope) or .claude/settings.json (project scope). ./install.sh does this for you, with a backup, and fills in the real paths. Replace /ABSOLUTE/PATH/TO/oops-i-did-it-again with where you cloned the repo. Use an absolute path or ${CLAUDE_PROJECT_DIR}: a hook command may be run through a shell or spawned directly depending on the build and the platform, so do not rely on ~ expanding.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /ABSOLUTE/PATH/TO/oops-i-did-it-again/hooks/bash-guard.py",
+            "timeout": 10,
+            "statusMessage": "bash-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /ABSOLUTE/PATH/TO/oops-i-did-it-again/hooks/file-guard.py",
+            "timeout": 20,
+            "statusMessage": "file-guard"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /ABSOLUTE/PATH/TO/oops-i-did-it-again/hooks/style-guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

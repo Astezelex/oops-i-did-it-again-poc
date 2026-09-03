@@ -1,0 +1,250 @@
+{
+ "source": "a private ledger, counts only",
+ "entries": 43,
+ "first": "2026-08-27",
+ "last": "2026-09-03",
+ "by_class": {
+  "A": 3,
+  "B": 9,
+  "C": 13,
+  "D": 1,
+  "E": 2,
+  "F": 6,
+  "G": 3,
+  "J": 1,
+  "K": 1
+ },
+ "by_date": {
+  "2026-08-27": 1,
+  "2026-08-28": 19,
+  "2026-08-29": 5,
+  "2026-08-30": 3,
+  "2026-09-01": 6,
+  "2026-09-02": 2,
+  "2026-09-03": 7
+ },
+ "by_caught_by": {
+  "the user": 13,
+  "the model": 24,
+  "a test or control run": 3,
+  "a hook": 1
+ },
+ "with_mechanism": 33,
+ "rows": [
+  {
+   "date": "2026-08-27",
+   "class": "B",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "E",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "B",
+   "caught_by": "a test or control run"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "G",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": null,
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-28",
+   "class": null,
+   "caught_by": null
+  },
+  {
+   "date": "2026-08-28",
+   "class": null,
+   "caught_by": null
+  },
+  {
+   "date": "2026-08-28",
+   "class": "J",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "F",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-28",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-29",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-29",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-29",
+   "class": null,
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-29",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-29",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-30",
+   "class": "B",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-08-30",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-08-30",
+   "class": "D",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "G",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "G",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "C",
+   "caught_by": "a test or control run"
+  },
+  {
+   "date": "2026-09-01",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-02",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-02",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "C",
+   "caught_by": "a hook"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "A",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "E",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "B",
+   "caught_by": "a test or control run"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "K",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "B",
+   "caught_by": "the user"
+  }
+ ]
+}
