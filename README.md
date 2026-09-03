@@ -28,7 +28,7 @@ the guards that loop produced.
 | `hooks/replay.py` | replays a guard against your real command history, so you learn its false-positive rate before wiring it |
 | `hooks/guard.py` | the same rules behind a plain CLI, for harnesses that are not Claude Code |
 | `install.sh` | wires it up: runs the tests first, backs up `settings.json`, idempotent, `--dry-run` and `--uninstall` |
-| `tests/` | 94 cases across four suites, including fail-open and installer tests. `bash tests/run-all.sh` |
+| `tests/` | 95 cases across four suites, including fail-open and installer tests. `bash tests/run-all.sh` |
 | `ledger/LEDGER-TEMPLATE.md` | the append-only error ledger, empty, with one worked example |
 | `analysis/` | the impact measurement: `measure.py` scores your own transcripts, `gen_charts.py` draws them, `ledger_stats.py` counts your ledger without quoting it |
 | `AGENTS.md` | install and extension instructions written for an agent doing this on someone's behalf |
@@ -105,7 +105,7 @@ shell.
 
 ```bash
 git clone <this repo> ~/.claude/oops && cd ~/.claude/oops
-bash tests/run-all.sh      # expect: ALL SUITES PASS, 94 cases, 0 failures
+bash tests/run-all.sh      # expect: ALL SUITES PASS, 95 cases, 0 failures
 ./install.sh --dry-run     # shows the settings.json it would write, changes nothing
 ./install.sh
 ```

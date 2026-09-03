@@ -109,6 +109,12 @@ BASH_QUIET = [
     ("commit message quoting a command",
      "git commit -F - <<'EOF'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
      + "\nEOF"),
+    # The real call carries options between `git` and the subcommand:
+    # `git -c user.name=... commit -q -F -`. The first pattern required them adjacent
+    # and so warned on the very commit that shipped it. Twice.
+    ("commit with -c options before the subcommand",
+     "git -c user.name=\"X\" -c user.email=\"y@z\" commit -q -F - <<'EOF'\n"
+     + J("systemctl ", "is-active gdm gdm3 sddm lightdm") + "\nEOF"),
     ("tee into a file is content too",
      "tee /tmp/x.md <<'EOF'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
      + "\nEOF"),

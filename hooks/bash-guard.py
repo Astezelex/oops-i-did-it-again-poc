@@ -335,10 +335,13 @@ RULES = (r_cuda_without_gpus, r_pipe_masks_exit_code, r_stderr_discarded,
 # stripping those would let anything hide inside a heredoc.
 # Commands whose heredoc body is TEXT, not commands. Found by using the guard: it
 # warned on its own commit message, because `git commit -F - <<'EOF'` carries prose.
+# ⛔ Options may sit between `git` and the subcommand: the real call is
+# `git -c user.name=... commit -q -F -`. The first version required them adjacent
+# and warned on the very commit that shipped it. Twice.
 # ⛔ Named explicitly and kept short. Everything absent from this list stays in scope,
 # because `bash <<EOF`, `ssh host <<EOF` and `python3 - <<PY` do execute their bodies.
 HEREDOC_AS_DATA = re.compile(
-    r'\b(git\s+(commit|tag|notes)\b[^\n]*-F\s*-|tee\b|mail\b|sendmail\b)'
+    r'\b(git\b[^\n]*?\b(commit|tag|notes)\b[^\n]*-F\s*-|tee\b|mail\b|sendmail\b)'
     r'[^\n]*<<-?\s*[\'"]?([A-Za-z_][A-Za-z0-9_]*)[\'"]?[^\n]*\n')
 
 HEREDOC_TO_FILE = re.compile(
