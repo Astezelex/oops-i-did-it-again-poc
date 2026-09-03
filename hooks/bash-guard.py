@@ -162,6 +162,10 @@ def r_secret_exposure(cmd):
     if re.search(r'\bsshpass\s+-p\s*\S', cmd):
         return ("BLOCK", "sshpass -p puts the password in the process list where any user can "
                          "read it. Use a key, or the house chmod-600 file pattern.")
+    # exfiltration: secret piped to the network
+    if re.search(r'(\.env|id_rsa|id_ed25519|\.pem|token)[^\n]{0,40}\|\s*(curl|wget|nc)\b', cmd, re.I):
+        return ("BLOCK", "a credential is being piped to the network. Refusing.")
+
     # printing a credential file to stdout, i.e. into the transcript
     # NOTE: `echo` is deliberately NOT in this list. `echo "checking /path/.env"` is a
     # heading, not a leak; including it produced false blocks on real commands (replay,
@@ -170,7 +174,7 @@ def r_secret_exposure(cmd):
     # Replay caught this: `head -1 ~/.ssh/id_ed25519.pub` is ordinary work and the strict
     # token denied it. The \b matters: without it the \w+ backtracks to a shorter name and
     # the lookahead never sees ".pub".
-    if re.search(r'\b(cat|less|more|head|tail)\b[^\n|]*(\.env\b|/\.ssh/id_\w+\b(?!\.pub)|\.pem\b|\.\w*token\b|credentials\.json|\.aws/credentials|kubeconfig)', cmd):
+    if re.search(r'\b(cat|less|more|head|tail)\b[^\n|]*(\.env\b|/\.ssh/id_\w+\b(?!\.pub)|\.pem\b|\.\w*token\b|/\.\w*(pass|passwd|password|secret|secret_key|_key)\b|credentials\.json|\.aws/credentials|kubeconfig)', cmd):
         # The capture pattern is explicitly allowed: TOKEN=$(cat ~/.mytoken).
         # A command substitution captures into a variable; it never reaches the transcript.
         # Only a bare print of the file is a leak.
@@ -180,18 +184,25 @@ def r_secret_exposure(cmd):
         # immediately after the opening paren. Replay caught that: 2 legitimate
         # `T=$(remote-exec -- cat ...token)` commands were denied by the strict form.
         captured = re.search(r'(\$\(|`)[^)`]*\b(cat|head|tail)\b[^)`]*'
-                             r'(\.env|/\.ssh/id_\w+\b(?!\.pub)|\.pem|\.\w*token\b|credentials\.json|'
+                             r'(\.env|/\.ssh/id_\w+\b(?!\.pub)|\.pem|\.\w*token\b|/\.\w*(pass|passwd|password|secret|secret_key|_key)\b|credentials\.json|'
                              r'\.aws/credentials|kubeconfig)', cmd)
         # \b on BOTH sides of every verb. Without the leading boundary, `ls\b` matches the
         # tail of "credentiaLS", so `cat ~/.aws/credentials` silently passed this rule.
         # Found by the true-positive suite in tests/, not by the replay: a replay can only
         # show what a rule DOES fire on, never what it should have.
+        # A PIPE IS A CAPTURE TOO, not a leak. Feeding a secret to another
+        # process's stdin puts nothing in the transcript, exactly like $(...).
+        # Replay over 9680 real commands: without this exemption the rule denied
+        # 6 ordinary `cat ~/.svc_token | remote-exec ...` calls and caught no leak.
+        # Safe because sending to the network is rejected above, by the
+        # exfiltration rule, which now deliberately runs FIRST.
+        if not captured:
+            captured = re.search(r'\b(cat|head|tail)\b[^\n]*'
+                                 r'(\.env|/\.ssh/id_\w+\b(?!\.pub)|\.pem|\.\w*token\b|/\.\w*(pass|passwd|password|secret|secret_key|_key)\b|credentials\.json|\.aws/credentials|kubeconfig)'
+                                 r'[^\n]*\|', cmd)
         if not captured and not re.search(r'(\bmd5sum\b|\bsha\d+sum\b|\bwc\b|\bstat\b|\bls\b|grep -c)', cmd):
             return ("BLOCK", "this prints a credential file into the transcript. Check that it "
                              "EXISTS or its length instead, never its contents.")
-    # exfiltration: secret piped to the network
-    if re.search(r'(\.env|id_rsa|id_ed25519|\.pem|token)[^\n]{0,40}\|\s*(curl|wget|nc)\b', cmd, re.I):
-        return ("BLOCK", "a credential is being piped to the network. Refusing.")
     return None
 
 def r_git_safety(cmd):
