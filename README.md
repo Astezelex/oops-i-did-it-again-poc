@@ -28,7 +28,7 @@ the guards that loop produced.
 | `hooks/replay.py` | replays a guard against your real command history, so you learn its false-positive rate before wiring it |
 | `hooks/guard.py` | the same rules behind a plain CLI, for harnesses that are not Claude Code |
 | `install.sh` | wires it up: runs the tests first, backs up `settings.json`, idempotent, `--dry-run` and `--uninstall` |
-| `tests/` | 89 cases across four suites, including fail-open and installer tests. `bash tests/run-all.sh` |
+| `tests/` | 94 cases across four suites, including fail-open and installer tests. `bash tests/run-all.sh` |
 | `ledger/LEDGER-TEMPLATE.md` | the append-only error ledger, empty, with one worked example |
 | `analysis/` | the impact measurement: `measure.py` scores your own transcripts, `gen_charts.py` draws them, `ledger_stats.py` counts your ledger without quoting it |
 | `AGENTS.md` | install and extension instructions written for an agent doing this on someone's behalf |
@@ -44,27 +44,48 @@ hallucinated fact. It is **a working tool, a real number, and the wrong question
 ## Did it work
 
 `analysis/measure.py` scores every Bash command in this machine's Claude Code transcripts
-against the current rule set: **9,222 commands over 28 days**, 21 days before the guards
-went live and 7 after, both periods scored by the same rules. The metric is how often an
-issued command carried a shape a guard objects to, per 100 commands.
+against the current rule set: **9,426 commands over 28 days**, both periods scored
+by the same rules. The metric is how often an issued command carried a shape a guard
+objects to, per 100 commands.
 
-**9.97 per 100 before, 7.41 after.** The daily swing narrows from 0-23 to 3-13.
+**9.15 per 100 before, 4.29 after.** The daily swing narrows from 0-23 to 2-7.
 
-![Daily rate of commands carrying a guarded shape, falling from a mean of 9.97 per 100 before the guards to 7.41 after](analysis/charts/rate-over-time.svg)
+![Daily rate of commands carrying a guarded shape, falling from a mean of 9.15 per 100 before the guards to 4.29 after](analysis/charts/rate-over-time.svg)
+
+⛔ **These numbers replaced an earlier 9.97 -> 7.41, and the reason matters more than the
+numbers.** A heredoc written into a file is content, not commands, but the scorer was
+reading the body anyway. A handoff quoting `systemctl is-active a b c` was being counted
+as though that command had been run. Stripping those bodies is the whole of the change:
+
+| method | before | after | drop |
+|---|---|---|---|
+| as first published | 9.87 | 7.00 | 29.1% |
+| wider meta filter only | 9.87 | 6.98 | 29.3% |
+| heredoc bodies stripped only | 9.15 | 4.31 | 52.9% |
+| both, as published now | 9.15 | 4.29 | 53.1% |
+
+Two things follow, and neither flatters the result. The measured improvement roughly
+doubled because of a scorer bug, not because anything got better. And the fix moves the
+*after* period far more than the *before* one, which means the later period contains much
+more written documentation; part of what the original chart called improvement was really
+us writing more handoffs. A metric that counts prose as commands rewards writing prose.
 
 Per rule, split on each rule's own start date, since a rule cannot have changed a command
 written before it existed:
 
-![Per-rule before and after rates. package_install down 71 percent, cuda_without_gpus down 67, pipe_masks_exit_code down 37, empty_grep_as_absence down 32, stderr_discarded down 16, guessed_unit_candidates up 56, delete_before_verify up 97](analysis/charts/per-rule.svg)
+![Per-rule before and after rates. arbitrary_row_from_listing down 88, cuda_without_gpus down 85, package_install down 79, stderr_discarded down 56, catastrophic down 54, pipe_masks_exit_code down 42, empty_grep_as_absence down 26, delete_before_verify up 19, guessed_unit_candidates up 45, git_safety up 469](analysis/charts/per-rule.svg)
 
 Reading it:
 
-- The rule that BLOCKS fell hardest: `cuda_without_gpus`, down 67%.
-- Two rules rose, `delete_before_verify` at n=16 and `guessed_unit_candidates` at n=54.
-  Task mix, warning fatigue and a rule that is too broad all fit the data, and this
-  measurement cannot tell them apart.
+- The rule that BLOCKS is among the steepest falls: `cuda_without_gpus`, down 85%.
+- 7 rules fell, 3 rose: `delete_before_verify` up 19%, `guessed_unit_candidates` up 45%, `git_safety` up 469%.
+  Task mix, warning fatigue and a rule that is simply too broad all fit that data, and this
+  measurement cannot tell them apart. `git_safety` moves on single figures, so its percentage
+  is noise, not a finding.
 - It counts command shapes, not errors avoided. Most rules warn instead of blocking.
-- Seven days of "after", one operator, one machine, an uncontrolled workload.
+- Six days of "after", one operator, one machine, an uncontrolled workload.
+- ⛔ The scorer was wrong once already, and the correction halved the headline. Treat any
+  version of this chart as provisional until someone reruns it on their own transcripts.
 
 The better measurement, for a later version: the hook's warning text lands in the
 transcript, so pairing each warning with the next command in that session would show how
@@ -84,7 +105,7 @@ shell.
 
 ```bash
 git clone <this repo> ~/.claude/oops && cd ~/.claude/oops
-bash tests/run-all.sh      # expect: ALL SUITES PASS, 89 cases, 0 failures
+bash tests/run-all.sh      # expect: ALL SUITES PASS, 94 cases, 0 failures
 ./install.sh --dry-run     # shows the settings.json it would write, changes nothing
 ./install.sh
 ```

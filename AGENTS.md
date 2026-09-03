@@ -16,7 +16,7 @@ rather than continuing.
 
 ```bash
 git clone <repo> ~/.claude/oops && cd ~/.claude/oops
-bash tests/run-all.sh          # expect: ALL SUITES PASS, 89 cases, 0 failures
+bash tests/run-all.sh          # expect: ALL SUITES PASS, 94 cases, 0 failures
 ./install.sh --dry-run         # expect: prints the settings.json it WOULD write
 ./install.sh                   # expect: "installed skill:", "backed up:", "wired: ..."
 ```

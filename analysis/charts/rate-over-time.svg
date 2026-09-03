@@ -21,7 +21,7 @@
 </style>
 <rect class="f-bg" x="0.0" y="0.0" width="900.0" height="340.0" fill="#fcfcfb"/>
 <text class="f-ink" x="52.0" y="26.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">Commands carrying a guarded shape, per 100 issued</text>
-<text class="f-muted" x="52.0" y="44.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">one point per day, 2026-08-04 to 2026-09-03, 9222 commands</text>
+<text class="f-muted" x="52.0" y="44.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">one point per day, 2026-08-04 to 2026-09-03, 9426 commands</text>
 <line class="s-grid" x1="52.0" y1="286.0" x2="876.0" y2="286.0" stroke="#e3e2df" stroke-width="1"/>
 <text class="f-muted" x="44.0" y="290.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="400">0</text>
 <line class="s-grid" x1="52.0" y1="240.0" x2="876.0" y2="240.0" stroke="#e3e2df" stroke-width="1"/>
@@ -37,37 +37,37 @@
 <rect class="f-band" x="692.9" y="56.0" width="183.1" height="230.0" fill="#f2f1ee"/>
 <line class="s-after" x1="692.9" y1="50.0" x2="692.9" y2="286.0" stroke="#2a78d6" stroke-width="2" stroke-dasharray="4 3"/>
 <text class="f-after" x="698.9" y="46.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2a78d6" text-anchor="start" font-weight="600">guards go live</text>
-<polyline class="s-before" fill="none" stroke="#8b8a85" stroke-width="2" stroke-linejoin="round" points="52.0,224.5 82.5,195.2 113.0,231.1 143.6,220.6 174.1,148.4 204.6,196.4 235.1,219.0 265.6,286.0 296.1,176.5 326.7,154.5 357.2,237.6 387.7,160.1 418.2,224.3 448.7,180.6 479.3,208.5 509.8,193.4 540.3,209.2 570.8,144.0 601.3,242.9 631.9,73.9 662.4,219.5"/>
-<circle class="f-before s-bg" cx="52.0" cy="224.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<polyline class="s-before" fill="none" stroke="#8b8a85" stroke-width="2" stroke-linejoin="round" points="52.0,226.5 82.5,195.2 113.0,233.8 143.6,220.6 174.1,153.5 204.6,206.9 235.1,231.2 265.6,286.0 296.1,176.5 326.7,190.4 357.2,256.9 387.7,160.1 418.2,226.3 448.7,180.6 479.3,208.5 509.8,193.4 540.3,224.9 570.8,171.3 601.3,242.9 631.9,77.2 662.4,231.1"/>
+<circle class="f-before s-bg" cx="52.0" cy="226.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="82.5" cy="195.2" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="113.0" cy="231.1" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="113.0" cy="233.8" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="143.6" cy="220.6" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="174.1" cy="148.4" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="204.6" cy="196.4" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="235.1" cy="219.0" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="174.1" cy="153.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="204.6" cy="206.9" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="235.1" cy="231.2" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="265.6" cy="286.0" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="296.1" cy="176.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="326.7" cy="154.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="357.2" cy="237.6" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="326.7" cy="190.4" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="357.2" cy="256.9" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="387.7" cy="160.1" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="418.2" cy="224.3" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="418.2" cy="226.3" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="448.7" cy="180.6" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="479.3" cy="208.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="509.8" cy="193.4" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="540.3" cy="209.2" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="570.8" cy="144.0" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="540.3" cy="224.9" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="570.8" cy="171.3" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
 <circle class="f-before s-bg" cx="601.3" cy="242.9" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="631.9" cy="73.9" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-before s-bg" cx="662.4" cy="219.5" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
-<polyline class="s-after" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" points="662.4,219.5 692.9,201.5 723.4,257.9 753.9,163.2 784.4,212.2 815.0,225.0 845.5,232.0 876.0,262.0"/>
-<circle class="f-after s-bg" cx="662.4" cy="219.5" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="692.9" cy="201.5" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="723.4" cy="257.9" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="753.9" cy="163.2" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="784.4" cy="212.2" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="815.0" cy="225.0" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="845.5" cy="232.0" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle class="f-after s-bg" cx="876.0" cy="262.0" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="631.9" cy="77.2" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-before s-bg" cx="662.4" cy="231.1" r="3.5" fill="#8b8a85" stroke="#fcfcfb" stroke-width="2"/>
+<polyline class="s-after" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" points="662.4,231.1 692.9,218.8 723.4,262.6 753.9,236.9 784.4,223.5 815.0,262.3 845.5,259.0 876.0,269.3"/>
+<circle class="f-after s-bg" cx="662.4" cy="231.1" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="692.9" cy="218.8" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="723.4" cy="262.6" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="753.9" cy="236.9" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="784.4" cy="223.5" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="815.0" cy="262.3" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="845.5" cy="259.0" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle class="f-after s-bg" cx="876.0" cy="269.3" r="3.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
 <text class="f-muted" x="52.0" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">08-04</text>
 <text class="f-muted" x="143.6" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">08-08</text>
 <text class="f-muted" x="235.1" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">08-11</text>
@@ -78,6 +78,6 @@
 <text class="f-muted" x="692.9" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">08-28</text>
 <text class="f-muted" x="784.4" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">08-31</text>
 <text class="f-muted" x="876.0" y="304.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#52514e" text-anchor="middle" font-weight="400">09-03</text>
-<text class="f-muted" x="52.0" y="322.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">mean before 9.97 per 100, mean after 7.41 per 100 (-26%)</text>
+<text class="f-muted" x="52.0" y="322.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">mean before 9.15 per 100, mean after 4.29 per 100 (-53%)</text>
 <text class="f-muted" x="876.0" y="322.0" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="400">same rules applied to both periods</text>
 </svg>

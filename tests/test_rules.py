@@ -78,6 +78,13 @@ BASH_TRIGGERS = [
     ("arbitrary_row",          "loginctl show-session $(loginctl list-sessions --no-legend | awk 'NR==1{print $1}')", "WARN"),
     ("guessed_units",          J("systemctl ", "is-active gdm gdm3 sddm lightdm"), "WARN"),
     ("empty_grep_as_absence",  J("journalctl ", "-u myapp --since -3h | grep -cE 'GET|POST'"), "WARN"),
+    # ...but the same text piped INTO A SHELL really runs, so it stays in scope.
+    ("executed heredoc still scored",
+     "bash <<'EOF'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
+     + "\nEOF", "WARN"),
+    ("command AFTER a data heredoc is still scored",
+     "git commit -F - <<'EOF'\nprose\nEOF\n"
+     + J("systemctl ", "is-active gdm gdm3 sddm lightdm"), "WARN"),
 ]
 
 BASH_QUIET = [
@@ -91,6 +98,20 @@ BASH_QUIET = [
     ("token piped into a process",
      J("cat ", "/home/u/.svc_token ") + RURA + J(" remote-exec ", "-- python3 /app/x.py")),
     ("ordinary dotfile",       J("cat ", "/home/u/.bashrc")),
+    # A heredoc written INTO A FILE is content, not commands. Measured: a handoff
+    # quoting a command was scored as though the command had been run, which
+    # inflated both the warnings and the published chart.
+    ("doc heredoc quoting a command",
+     "cat > notes.md <<'MD'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
+     + "\nMD\necho written"),
+    # A commit message is prose too. Found by using the guard: it warned on its own
+    # commit, one minute after the file-redirect case shipped.
+    ("commit message quoting a command",
+     "git commit -F - <<'EOF'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
+     + "\nEOF"),
+    ("tee into a file is content too",
+     "tee /tmp/x.md <<'EOF'\n" + J("systemctl ", "is-active gdm gdm3 sddm lightdm")
+     + "\nEOF"),
     ("file that merely ends in passed", J("cat ", "results.passed")),
     ("existence check only",   J("ls ", "-l /root/.aws/credentials")),
     ("checksum not contents",  J("md5sum ", "/root/.aws/credentials")),

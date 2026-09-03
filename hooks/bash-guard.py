@@ -321,6 +321,52 @@ RULES = (r_cuda_without_gpus, r_pipe_masks_exit_code, r_stderr_discarded,
          r_arbitrary_row_from_listing, r_guessed_unit_candidates,
          r_empty_grep_as_absence)
 
+
+# ---------------------------------------------------------------- input shaping
+
+# A heredoc written INTO A FILE is content, not commands. Measured 2026-09-03:
+# `cat > handoff.md <<'MD' ... MD` whose text quoted `systemctl is-active a b c`
+# fired the guessed-units rule, as though the command had been run. Documentation
+# that quotes a command is not that command. This polluted both the live warnings
+# and the measurement, and it does so on BOTH sides of any before/after chart.
+#
+# ⛔ Only heredocs redirected to a FILE are stripped. The body of `bash <<EOF`,
+# `ssh host <<EOF` or `python3 - <<PY` really does execute, so it stays in scope;
+# stripping those would let anything hide inside a heredoc.
+# Commands whose heredoc body is TEXT, not commands. Found by using the guard: it
+# warned on its own commit message, because `git commit -F - <<'EOF'` carries prose.
+# ⛔ Named explicitly and kept short. Everything absent from this list stays in scope,
+# because `bash <<EOF`, `ssh host <<EOF` and `python3 - <<PY` do execute their bodies.
+HEREDOC_AS_DATA = re.compile(
+    r'\b(git\s+(commit|tag|notes)\b[^\n]*-F\s*-|tee\b|mail\b|sendmail\b)'
+    r'[^\n]*<<-?\s*[\'"]?([A-Za-z_][A-Za-z0-9_]*)[\'"]?[^\n]*\n')
+
+HEREDOC_TO_FILE = re.compile(
+    r'>\s*[^\s<>|;&]+[^\n]*<<-?\s*[\'"]?([A-Za-z_][A-Za-z0-9_]*)[\'"]?[^\n]*\n')
+
+
+def strip_written_heredocs(cmd):
+    """Remove heredoc bodies that are content: written to a file, or fed to a
+    command that consumes text as data (git commit -F -, tee, mail)."""
+    out, pos = [], 0
+    while True:
+        m_plik = HEREDOC_TO_FILE.search(cmd, pos)
+        m_dane = HEREDOC_AS_DATA.search(cmd, pos)
+        kandydaci = [x for x in (m_plik, m_dane) if x]
+        if not kandydaci:
+            out.append(cmd[pos:])
+            break
+        m = min(kandydaci, key=lambda x: x.start())
+        out.append(cmd[pos:m.end()])
+        znacznik = m.group(m.lastindex)
+        koniec = re.search(r'^\s*%s\s*$' % re.escape(znacznik),
+                           cmd[m.end():], re.M)
+        if not koniec:
+            break                     # unterminated: leave the rest in scope
+        pos = m.end() + koniec.end()
+    return ''.join(out)
+
+
 # ---------------------------------------------------------------- driver
 
 def emit(obj):
@@ -337,6 +383,9 @@ def main():
     cmd = (data.get("tool_input") or {}).get("command") or ""
     if not cmd:
         return 0
+
+    # Content written into a file is not a command. See strip_written_heredocs.
+    cmd = strip_written_heredocs(cmd)
 
     blocks, warns = [], []
     for rule in RULES:

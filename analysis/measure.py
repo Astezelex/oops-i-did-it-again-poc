@@ -14,6 +14,12 @@ What this measures, precisely, so nobody over-reads the chart:
     proof that fewer things broke.
   - The rule set is applied retroactively to old commands. Old sessions were not warned;
     they are being scored by today's rules so the two periods are comparable.
+  - ⛔ A consequence people miss: editing a rule MOVES THE HISTORICAL BARS on the next run.
+    That is the method working, not drift. `REVISED` below records when a rule's behaviour
+    changed, and the output carries it, so two published versions of a chart can be told
+    apart. Never compare a chart to an older one without checking that field.
+  - Heredoc bodies written into a FILE are stripped before scoring, through the guard's own
+    function, so documentation quoting a command is not counted as issuing it.
   - Sessions spent building this repo type trigger strings on purpose (test cases, README
     examples). They are counted separately and excluded from the headline.
 
@@ -60,13 +66,29 @@ RULE_BORN = {
 }
 DAY_ONE = [r for r, d in RULE_BORN.items() if d == INSTALL_DATE]
 
+# Rules whose BEHAVIOUR changed after they were born. The date they were born stays,
+# because the whole method scores every period with today's rules so the periods stay
+# comparable. What changes is that a re-run also moves the HISTORICAL bars, and that
+# has to be visible to anyone comparing two published versions of the chart.
+REVISED = {
+    "r_secret_exposure": [
+        ("2026-09-03", "hidden pass/secret/key files added; a pipe now counts as a "
+                       "capture; exfiltration checked first"),
+    ],
+}
 
-def load_rules():
+
+def load_guard():
+    """The hook module itself, so the measurement scores exactly what the guard sees."""
     path = os.path.join(REPO, "hooks", "bash-guard.py")
     spec = importlib.util.spec_from_file_location("bash_guard", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return mod.RULES
+    return mod
+
+
+def load_rules():
+    return load_guard().RULES
 
 
 def commands():
@@ -100,15 +122,30 @@ def commands():
                         # test cases, README examples, edits to the hooks themselves.
                         # Those are not ordinary work and would flatter or spoil both
                         # periods depending on the rule, so they are counted apart.
+                        # ⛔ Rozszerzone 2026-09-03. Filtr patrzyl tylko na katalog
+                        # repozytorium i sciezke .claude/hooks, wiec praca nad
+                        # guardami prowadzona ze scratchpada albo przez zdalne
+                        # wywolanie liczyla sie jako zwykla praca i wnosila do
+                        # naglowka ksztalty wpisywane CELOWO, jako przypadki testowe.
                         meta = ("oops-repo" in cwd or "oops-repo" in cmd
                                 or "oops-i-did-it-again" in cmd
                                 or ".claude/hooks" in cmd
-                                or "oops-ledger" in cmd)
+                                or "hooks-backup" in cmd
+                                or "oops-ledger" in cmd
+                                or "oops-evidence" in cmd
+                                or "bash-guard" in cmd
+                                or "style-guard" in cmd
+                                or "file-guard" in cmd
+                                or "r_secret_exposure" in cmd)
                         yield ts, cmd, cwd, meta
 
 
 def main():
-    rules = load_rules()
+    guard = load_guard()
+    rules = guard.RULES
+    # The guard strips heredoc bodies written into a file before scoring, so the
+    # measurement must strip them too. Same function, never a second copy of the logic.
+    przytnij = guard.strip_written_heredocs
     per_day_total = Counter()
     per_day_hits = Counter()
     per_day_meta = Counter()
@@ -129,6 +166,7 @@ def main():
         # rule's own birth date count towards its rate.
         for name, born in RULE_BORN.items():
             day_totals_for_rule[name]["before" if date < born else "after"] += 1
+        cmd = przytnij(cmd)
         fired = False
         for rule in rules:
             try:
@@ -150,6 +188,10 @@ def main():
     out = {
         "install_date": INSTALL_DATE,
         "generated_from": "~/.claude/projects/*/*.jsonl",
+        # Carried into the data so two published versions of a chart can be told apart:
+        # a rule edit re-scores history, and without this the bars look like they drifted.
+        "rule_revisions": {r: [{"date": d, "what": w} for d, w in v]
+                           for r, v in REVISED.items()},
         "totals": {
             "commands": sum(per_day_total.values()),
             "commands_excluded_as_meta": sum(per_day_meta.values()),
