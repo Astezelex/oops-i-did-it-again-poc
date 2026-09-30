@@ -16,7 +16,7 @@ rather than continuing.
 
 ```bash
 git clone <repo> ~/.claude/oops && cd ~/.claude/oops
-bash tests/run-all.sh          # expect: ALL SUITES PASS, 95 cases, 0 failures
+bash tests/run-all.sh          # expect: ALL SUITES PASS, 141 cases, 0 failures
 ./install.sh --dry-run         # expect: prints the settings.json it WOULD write
 ./install.sh                   # expect: "installed skill:", "backed up:", "wired: ..."
 ```
@@ -35,8 +35,11 @@ python3 hooks/replay.py 12                                          # expect a r
 
 `replay.py` is the important one. It reports how often these rules fire on **this user's**
 real history. Read it out to them: block rate first, then any warn above about 5%. On the
-machine the rules were written for, the numbers are 8.5% warn and 0.5% block over 3,502
-commands. Materially different numbers on this machine mean a rule needs narrowing here.
+machine the rules were written for, v2 measured 7.5% warn and 0.55% block over 8,555
+commands. Then sample the hits of any rule that looks busy
+(`python3 hooks/replay.py 12 --hits hits.jsonl`): v1's rates looked fine, and sampling showed
+two thirds of one rule's blocks were false. Materially different numbers on this machine
+mean a rule needs narrowing here.
 
 ## Do not
 

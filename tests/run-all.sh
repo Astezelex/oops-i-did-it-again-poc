@@ -3,14 +3,15 @@
 #
 #   bash tests/run-all.sh
 #
-# Expected on a clean checkout: 83 cases, 0 failures.
+# Expected on a clean checkout: 141 cases, 0 failures.
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO" || exit 1
 
 rc=0
-for t in tests/test_rules.py tests/test_style_guard.py tests/test_guard_cli.py; do
+for t in tests/test_rules.py tests/test_file_checks.py tests/test_style_guard.py \
+         tests/test_claim_guard.py tests/test_guard_cli.py; do
   out="$(python3 "$t")"
   status=$?
   printf '%-28s %-22s exit %d\n' "$t" "$(printf '%s' "$out" | tail -1)" "$status"

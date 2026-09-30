@@ -63,6 +63,15 @@ RULE_BORN = {
     "r_arbitrary_row_from_listing": "2026-09-02",
     "r_guessed_unit_candidates":    "2026-09-02",
     "r_empty_grep_as_absence":      "2026-09-02",
+    # v2 rules, born from ledger incidents; each has a before AND an after inside the
+    # transcript window that still exists (2026-08-31 onward, see README "Did it work").
+    "r_server_identity_unverified": "2026-09-05",
+    "r_restore_from_memory":        "2026-09-07",
+    "r_port_start_unchecked":       "2026-09-11",
+    "r_runner_timeout_shorter":     "2026-09-11",
+    "r_push_over_state_file":       "2026-09-12",
+    "r_ha_storage_dump":            "2026-09-29",
+    "r_cron_timezone":              "2026-09-30",
 }
 DAY_ONE = [r for r, d in RULE_BORN.items() if d == INSTALL_DATE]
 

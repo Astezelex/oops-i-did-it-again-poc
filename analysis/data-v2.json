@@ -1,0 +1,527 @@
+{
+ "install_date": "2026-08-28",
+ "generated_from": "~/.claude/projects/*/*.jsonl",
+ "rule_revisions": {
+  "r_secret_exposure": [
+   {
+    "date": "2026-09-03",
+    "what": "hidden pass/secret/key files added; a pipe now counts as a capture; exfiltration checked first"
+   }
+  ]
+ },
+ "totals": {
+  "commands": 8070,
+  "commands_excluded_as_meta": 500,
+  "days": 29,
+  "first_day": "2026-08-31",
+  "last_day": "2026-09-30"
+ },
+ "period_totals": {
+  "after": 8070
+ },
+ "headline": {
+  "rules_counted": [
+   "r_catastrophic",
+   "r_config_guard",
+   "r_cuda_without_gpus",
+   "r_delete_before_verify",
+   "r_git_safety",
+   "r_package_install",
+   "r_pipe_masks_exit_code",
+   "r_secret_exposure",
+   "r_stderr_discarded",
+   "r_time_based_delete"
+  ],
+  "note": "only the ten rules that existed on the install date, so the metric does not change shape mid-series",
+  "before_commands": 0,
+  "after_commands": 8070,
+  "before_flagged": 0,
+  "after_flagged": 220
+ },
+ "daily": [
+  {
+   "date": "2026-08-31",
+   "commands": 305,
+   "flagged_commands": 6,
+   "rate_per_100": 1.97
+  },
+  {
+   "date": "2026-09-01",
+   "commands": 543,
+   "flagged_commands": 14,
+   "rate_per_100": 2.58
+  },
+  {
+   "date": "2026-09-02",
+   "commands": 545,
+   "flagged_commands": 16,
+   "rate_per_100": 2.94
+  },
+  {
+   "date": "2026-09-03",
+   "commands": 596,
+   "flagged_commands": 10,
+   "rate_per_100": 1.68
+  },
+  {
+   "date": "2026-09-04",
+   "commands": 481,
+   "flagged_commands": 21,
+   "rate_per_100": 4.37
+  },
+  {
+   "date": "2026-09-05",
+   "commands": 308,
+   "flagged_commands": 7,
+   "rate_per_100": 2.27
+  },
+  {
+   "date": "2026-09-06",
+   "commands": 65,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-09-07",
+   "commands": 700,
+   "flagged_commands": 6,
+   "rate_per_100": 0.86
+  },
+  {
+   "date": "2026-09-08",
+   "commands": 135,
+   "flagged_commands": 1,
+   "rate_per_100": 0.74
+  },
+  {
+   "date": "2026-09-09",
+   "commands": 41,
+   "flagged_commands": 2,
+   "rate_per_100": 4.88
+  },
+  {
+   "date": "2026-09-10",
+   "commands": 346,
+   "flagged_commands": 6,
+   "rate_per_100": 1.73
+  },
+  {
+   "date": "2026-09-11",
+   "commands": 868,
+   "flagged_commands": 35,
+   "rate_per_100": 4.03
+  },
+  {
+   "date": "2026-09-12",
+   "commands": 119,
+   "flagged_commands": 9,
+   "rate_per_100": 7.56
+  },
+  {
+   "date": "2026-09-13",
+   "commands": 411,
+   "flagged_commands": 15,
+   "rate_per_100": 3.65
+  },
+  {
+   "date": "2026-09-15",
+   "commands": 31,
+   "flagged_commands": 2,
+   "rate_per_100": 6.45
+  },
+  {
+   "date": "2026-09-16",
+   "commands": 104,
+   "flagged_commands": 3,
+   "rate_per_100": 2.88
+  },
+  {
+   "date": "2026-09-17",
+   "commands": 120,
+   "flagged_commands": 6,
+   "rate_per_100": 5.0
+  },
+  {
+   "date": "2026-09-18",
+   "commands": 52,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-09-19",
+   "commands": 48,
+   "flagged_commands": 2,
+   "rate_per_100": 4.17
+  },
+  {
+   "date": "2026-09-20",
+   "commands": 17,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-09-22",
+   "commands": 363,
+   "flagged_commands": 10,
+   "rate_per_100": 2.75
+  },
+  {
+   "date": "2026-09-23",
+   "commands": 209,
+   "flagged_commands": 17,
+   "rate_per_100": 8.13
+  },
+  {
+   "date": "2026-09-24",
+   "commands": 29,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-09-25",
+   "commands": 52,
+   "flagged_commands": 0,
+   "rate_per_100": 0.0
+  },
+  {
+   "date": "2026-09-26",
+   "commands": 40,
+   "flagged_commands": 3,
+   "rate_per_100": 7.5
+  },
+  {
+   "date": "2026-09-27",
+   "commands": 93,
+   "flagged_commands": 7,
+   "rate_per_100": 7.53
+  },
+  {
+   "date": "2026-09-28",
+   "commands": 276,
+   "flagged_commands": 4,
+   "rate_per_100": 1.45
+  },
+  {
+   "date": "2026-09-29",
+   "commands": 634,
+   "flagged_commands": 4,
+   "rate_per_100": 0.63
+  },
+  {
+   "date": "2026-09-30",
+   "commands": 539,
+   "flagged_commands": 14,
+   "rate_per_100": 2.6
+  }
+ ],
+ "per_rule": {
+  "r_arbitrary_row_from_listing": {
+   "born": "2026-09-02",
+   "before": 5,
+   "after": 11,
+   "before_commands": 848,
+   "after_commands": 7222,
+   "before_per_100": 0.59,
+   "after_per_100": 0.152
+  },
+  "r_catastrophic": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 2,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 0.025
+  },
+  "r_cron_timezone": {
+   "born": "2026-09-30",
+   "before": 10,
+   "after": 6,
+   "before_commands": 7531,
+   "after_commands": 539,
+   "before_per_100": 0.133,
+   "after_per_100": 1.113
+  },
+  "r_cuda_without_gpus": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 1,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 0.012
+  },
+  "r_delete_before_verify": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 21,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 0.26
+  },
+  "r_empty_grep_as_absence": {
+   "born": "2026-09-02",
+   "before": 0,
+   "after": 40,
+   "before_commands": 848,
+   "after_commands": 7222,
+   "before_per_100": 0.0,
+   "after_per_100": 0.554
+  },
+  "r_guessed_unit_candidates": {
+   "born": "2026-09-02",
+   "before": 3,
+   "after": 47,
+   "before_commands": 848,
+   "after_commands": 7222,
+   "before_per_100": 0.354,
+   "after_per_100": 0.651
+  },
+  "r_ha_storage_dump": {
+   "born": "2026-09-29",
+   "before": 10,
+   "after": 2,
+   "before_commands": 6897,
+   "after_commands": 1173,
+   "before_per_100": 0.145,
+   "after_per_100": 0.171
+  },
+  "r_package_install": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 7,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 0.087
+  },
+  "r_pipe_masks_exit_code": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 84,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 1.041
+  },
+  "r_port_start_unchecked": {
+   "born": "2026-09-11",
+   "before": 19,
+   "after": 1,
+   "before_commands": 4065,
+   "after_commands": 4005,
+   "before_per_100": 0.467,
+   "after_per_100": 0.025
+  },
+  "r_push_over_state_file": {
+   "born": "2026-09-12",
+   "before": 0,
+   "after": 24,
+   "before_commands": 4933,
+   "after_commands": 3137,
+   "before_per_100": 0.0,
+   "after_per_100": 0.765
+  },
+  "r_restore_from_memory": {
+   "born": "2026-09-07",
+   "before": 0,
+   "after": 3,
+   "before_commands": 2843,
+   "after_commands": 5227,
+   "before_per_100": 0.0,
+   "after_per_100": 0.057
+  },
+  "r_runner_timeout_shorter": {
+   "born": "2026-09-11",
+   "before": 187,
+   "after": 92,
+   "before_commands": 4065,
+   "after_commands": 4005,
+   "before_per_100": 4.6,
+   "after_per_100": 2.297
+  },
+  "r_server_identity_unverified": {
+   "born": "2026-09-05",
+   "before": 0,
+   "after": 1,
+   "before_commands": 2470,
+   "after_commands": 5600,
+   "before_per_100": 0.0,
+   "after_per_100": 0.018
+  },
+  "r_stderr_discarded": {
+   "born": "2026-08-28",
+   "before": 0,
+   "after": 107,
+   "before_commands": 0,
+   "after_commands": 8070,
+   "before_per_100": null,
+   "after_per_100": 1.326
+  }
+ },
+ "per_rule_daily": {
+  "r_arbitrary_row_from_listing": {
+   "2026-09-27": 1,
+   "2026-08-31": 4,
+   "2026-09-13": 1,
+   "2026-09-30": 4,
+   "2026-09-03": 1,
+   "2026-09-01": 1,
+   "2026-09-04": 1,
+   "2026-09-09": 1,
+   "2026-09-11": 2
+  },
+  "r_catastrophic": {
+   "2026-09-12": 2
+  },
+  "r_cron_timezone": {
+   "2026-09-30": 6,
+   "2026-09-29": 6,
+   "2026-09-01": 1,
+   "2026-09-22": 1,
+   "2026-09-02": 2
+  },
+  "r_cuda_without_gpus": {
+   "2026-09-27": 1
+  },
+  "r_delete_before_verify": {
+   "2026-09-05": 1,
+   "2026-09-13": 2,
+   "2026-09-03": 2,
+   "2026-09-29": 1,
+   "2026-09-07": 1,
+   "2026-09-11": 3,
+   "2026-09-16": 1,
+   "2026-09-23": 3,
+   "2026-09-30": 2,
+   "2026-09-26": 3,
+   "2026-09-22": 2
+  },
+  "r_empty_grep_as_absence": {
+   "2026-09-27": 1,
+   "2026-09-13": 2,
+   "2026-09-30": 8,
+   "2026-09-12": 6,
+   "2026-09-29": 3,
+   "2026-09-11": 2,
+   "2026-09-15": 4,
+   "2026-09-23": 4,
+   "2026-09-28": 1,
+   "2026-09-07": 3,
+   "2026-09-02": 4,
+   "2026-09-22": 2
+  },
+  "r_guessed_unit_candidates": {
+   "2026-09-10": 2,
+   "2026-09-12": 4,
+   "2026-09-30": 1,
+   "2026-09-03": 6,
+   "2026-09-04": 6,
+   "2026-09-01": 3,
+   "2026-09-07": 4,
+   "2026-09-11": 21,
+   "2026-09-15": 1,
+   "2026-09-02": 2
+  },
+  "r_ha_storage_dump": {
+   "2026-09-18": 2,
+   "2026-09-17": 1,
+   "2026-09-23": 1,
+   "2026-09-29": 2,
+   "2026-09-22": 6
+  },
+  "r_package_install": {
+   "2026-09-01": 1,
+   "2026-09-17": 3,
+   "2026-09-09": 1,
+   "2026-09-03": 2
+  },
+  "r_pipe_masks_exit_code": {
+   "2026-09-27": 3,
+   "2026-09-10": 3,
+   "2026-09-19": 1,
+   "2026-09-13": 6,
+   "2026-09-30": 3,
+   "2026-09-03": 5,
+   "2026-09-01": 3,
+   "2026-09-29": 2,
+   "2026-09-17": 1,
+   "2026-09-11": 26,
+   "2026-09-04": 7,
+   "2026-09-07": 5,
+   "2026-09-16": 1,
+   "2026-09-22": 4,
+   "2026-09-09": 1,
+   "2026-09-28": 1,
+   "2026-09-02": 12
+  },
+  "r_port_start_unchecked": {
+   "2026-08-31": 19,
+   "2026-09-30": 1
+  },
+  "r_push_over_state_file": {
+   "2026-09-19": 1,
+   "2026-09-29": 10,
+   "2026-09-17": 6,
+   "2026-09-23": 6,
+   "2026-09-28": 1
+  },
+  "r_restore_from_memory": {
+   "2026-09-30": 1,
+   "2026-09-08": 1,
+   "2026-09-07": 1
+  },
+  "r_runner_timeout_shorter": {
+   "2026-09-27": 2,
+   "2026-09-18": 1,
+   "2026-09-05": 13,
+   "2026-09-06": 6,
+   "2026-09-10": 6,
+   "2026-09-19": 1,
+   "2026-09-13": 1,
+   "2026-09-30": 4,
+   "2026-09-03": 101,
+   "2026-09-04": 46,
+   "2026-09-29": 3,
+   "2026-09-12": 2,
+   "2026-09-11": 67,
+   "2026-09-01": 1,
+   "2026-09-16": 1,
+   "2026-09-08": 3,
+   "2026-09-15": 1,
+   "2026-09-22": 3,
+   "2026-09-23": 3,
+   "2026-09-28": 2,
+   "2026-09-07": 7,
+   "2026-09-02": 4,
+   "2026-09-20": 1
+  },
+  "r_server_identity_unverified": {
+   "2026-09-30": 1
+  },
+  "r_stderr_discarded": {
+   "2026-09-27": 3,
+   "2026-09-28": 3,
+   "2026-09-05": 6,
+   "2026-09-10": 3,
+   "2026-08-31": 6,
+   "2026-09-19": 1,
+   "2026-09-13": 7,
+   "2026-09-30": 9,
+   "2026-09-01": 10,
+   "2026-09-12": 7,
+   "2026-09-08": 1,
+   "2026-09-04": 14,
+   "2026-09-11": 6,
+   "2026-09-17": 2,
+   "2026-09-15": 2,
+   "2026-09-16": 1,
+   "2026-09-22": 4,
+   "2026-09-23": 14,
+   "2026-09-29": 1,
+   "2026-09-02": 5,
+   "2026-09-03": 2
+  }
+ }
+}

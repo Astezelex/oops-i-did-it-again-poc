@@ -22,6 +22,8 @@ import sys
 from collections import Counter
 
 DEFAULT = os.path.expanduser("~/.claude/oops-ledger.md")
+# First words that mean "the model caught it". Add your own language's first person.
+MODEL_WORDS = {"me", "i", "ja", "myself", "moi", "ich", "yo"}
 
 ENTRY = re.compile(r'^##\s+(\d{4}-\d{2}-\d{2})')
 CLASS = re.compile(r'^CLASS:\s*([A-Z])\b')
@@ -53,12 +55,20 @@ def main():
                 continue
             m = CAUGHT.match(line)
             if m and not cur["caught_by"]:
-                raw = m.group(1).lower()
-                if "hook" in raw or "guard" in raw:
+                raw = m.group(1).lower().strip()
+                # v2: the OPENING word decides. v1 tested tool words first, anywhere in the
+                # line, so "me, while looking for a free slot in `bash-guard.py.bak`" counted
+                # as caught by a hook, and "the user, with their own test" as a test run. It
+                # also knew only English: a Polish "ja" (me) fell through to "the user".
+                # Hand check on the 33 v2 entries: 13 user / 19 model / 1 test, where v1's
+                # order reported 14 / 14 / 4 test / 1 hook.
+                first = re.split(r"[\s,(]+", raw, maxsplit=1)[0]
+                if re.match(r"(a |the )?([\w-]+ ){0,2}(hook|guard)\b", raw):
                     who = "a hook"
-                elif "control" in raw or "test" in raw or "replay" in raw:
+                elif (re.match(r"(a |the |my own |my )?([\w-]+ ){0,2}(control|test|replay|check"
+                               r"|review|ultrareview|gate)s?\b", raw) or re.match(r"\S+\.py\b", raw)):
                     who = "a test or control run"
-                elif raw.startswith("me") or "myself" in raw:
+                elif first in MODEL_WORDS:
                     who = "the model"
                 else:
                     who = "the user"

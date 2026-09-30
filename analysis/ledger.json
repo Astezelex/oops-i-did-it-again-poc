@@ -1,18 +1,19 @@
 {
  "source": "a private ledger, counts only",
- "entries": 43,
+ "entries": 79,
  "first": "2026-08-27",
- "last": "2026-09-03",
+ "last": "2026-09-30",
  "by_class": {
-  "A": 3,
-  "B": 9,
-  "C": 13,
+  "A": 11,
+  "B": 13,
+  "C": 24,
   "D": 1,
-  "E": 2,
-  "F": 6,
-  "G": 3,
-  "J": 1,
-  "K": 1
+  "E": 4,
+  "F": 10,
+  "G": 6,
+  "J": 3,
+  "K": 2,
+  "L": 1
  },
  "by_date": {
   "2026-08-27": 1,
@@ -21,15 +22,28 @@
   "2026-08-30": 3,
   "2026-09-01": 6,
   "2026-09-02": 2,
-  "2026-09-03": 7
+  "2026-09-03": 10,
+  "2026-09-04": 7,
+  "2026-09-05": 2,
+  "2026-09-08": 1,
+  "2026-09-10": 1,
+  "2026-09-11": 5,
+  "2026-09-12": 1,
+  "2026-09-13": 1,
+  "2026-09-23": 1,
+  "2026-09-25": 1,
+  "2026-09-26": 1,
+  "2026-09-27": 2,
+  "2026-09-28": 4,
+  "2026-09-29": 3,
+  "2026-09-30": 3
  },
  "by_caught_by": {
-  "the user": 13,
-  "the model": 24,
-  "a test or control run": 3,
-  "a hook": 1
+  "the user": 29,
+  "the model": 44,
+  "a test or control run": 4
  },
- "with_mechanism": 33,
+ "with_mechanism": 60,
  "rows": [
   {
    "date": "2026-08-27",
@@ -74,7 +88,7 @@
   {
    "date": "2026-08-28",
    "class": "B",
-   "caught_by": "a test or control run"
+   "caught_by": "the model"
   },
   {
    "date": "2026-08-28",
@@ -114,7 +128,7 @@
   {
    "date": "2026-08-28",
    "class": "F",
-   "caught_by": "the user"
+   "caught_by": "a test or control run"
   },
   {
    "date": "2026-08-28",
@@ -159,7 +173,7 @@
   {
    "date": "2026-08-30",
    "class": "B",
-   "caught_by": "the user"
+   "caught_by": "a test or control run"
   },
   {
    "date": "2026-08-30",
@@ -179,7 +193,7 @@
   {
    "date": "2026-09-01",
    "class": "C",
-   "caught_by": "the model"
+   "caught_by": "the user"
   },
   {
    "date": "2026-09-01",
@@ -194,7 +208,7 @@
   {
    "date": "2026-09-01",
    "class": "C",
-   "caught_by": "a test or control run"
+   "caught_by": "the user"
   },
   {
    "date": "2026-09-01",
@@ -214,7 +228,7 @@
   {
    "date": "2026-09-03",
    "class": "C",
-   "caught_by": "a hook"
+   "caught_by": "the user"
   },
   {
    "date": "2026-09-03",
@@ -234,7 +248,7 @@
   {
    "date": "2026-09-03",
    "class": "B",
-   "caught_by": "a test or control run"
+   "caught_by": "the model"
   },
   {
    "date": "2026-09-03",
@@ -244,7 +258,187 @@
   {
    "date": "2026-09-03",
    "class": "B",
+   "caught_by": "a test or control run"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "A",
    "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "G",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-03",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "J",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "K",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "A",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-04",
+   "class": "A",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-05",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-05",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-08",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-10",
+   "class": "J",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-11",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-11",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-11",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-11",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-11",
+   "class": "F",
+   "caught_by": "a test or control run"
+  },
+  {
+   "date": "2026-09-12",
+   "class": "E",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-13",
+   "class": "B",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-23",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-25",
+   "class": "C",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-26",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-27",
+   "class": "G",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-27",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-28",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-28",
+   "class": "F",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-28",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-28",
+   "class": "C",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-29",
+   "class": "L",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-29",
+   "class": "A",
+   "caught_by": "the user"
+  },
+  {
+   "date": "2026-09-29",
+   "class": "G",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-30",
+   "class": "A",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-30",
+   "class": "E",
+   "caught_by": "the model"
+  },
+  {
+   "date": "2026-09-30",
+   "class": "C",
+   "caught_by": "the model"
   }
  ]
 }

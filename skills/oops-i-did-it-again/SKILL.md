@@ -55,9 +55,21 @@ repeat. Copy the failed log to `<name>.false-pass-<timestamp>` before rerunning 
 | **G** changed a knob without re-deriving dependents | one edit invalidated a neighbouring assumption |
 | **H** state written under duress | handoff or record skipped or panicked |
 | **I** long job in the foreground | blocked, polled, or lost to a timeout |
+| **J** rule acknowledged, then broken by habit | the rule was cited, then violated in the same turn or week |
+| **K** derived artefact carried its source | a generated file inherited the sensitivity of what it was built from |
+| **L** secret exposed while inspecting a store | a blocklist filter ("everything except X") printed live credentials |
+| **M** corroboration mistaken for elimination | evidence FOR one hypothesis read as ruling out another that predicts the same observation |
 
-If it fits none, add a new class. Do not force a bad fit. (Class J, "rule stated and
-acknowledged, then violated by habit in the same turn", was added this way.)
+If it fits none, add a new class. Do not force a bad fit. J to M were all added this way.
+
+**Before assigning a new letter, list the ones in use**, and take the first free one:
+
+```bash
+grep -oE '^CLASS: *[A-Z]\b' ~/.claude/oops-ledger.md | sort -u
+```
+
+The ledger this came from reused J, and the correction entry that fixed it reused K. The
+error that assigns a letter without looking is the same shape as most entries it labels.
 
 ## Step 3: route by whether it is mechanisable
 
@@ -76,10 +88,22 @@ acknowledged, then violated by habit in the same turn", was added this way.)
    went live.
 7. Prove it fires on the exact command that caused the incident.
 
-**Semantic, not syntactic, so memory plus a written trigger.** Classes A, C, G. A regex
-cannot see "you assumed". If the class has now recurred twice or more, consider a
-prompt-handler or agent-handler hook that can judge, and in the meantime write the trigger
-list down where the next session will read it.
+**Semantic, not syntactic, so move the guard into the harness.** Classes A, C, G, M. A
+regex cannot see "you assumed", but the thing that consumes the result often can be made to
+refuse it. Shapes that held in practice:
+
+- a gate that treats a truncated or unparseable judge answer as FAILED, never as a verdict
+- result files opened with exclusive create (`open(path, "x")`), so a rerun cannot overwrite
+  the evidence of the first run
+- a launch script that waits for health and removes itself when unhealthy, so an unproven
+  production config cannot crashloop
+- a replay that exits INVALID when any recorded input is missing, instead of scoring zeros
+- a tool that prints every statement of the user's on a topic together with the messages
+  that FOLLOW it, so a later correction shows next to the first claim
+- a Stop hook that asks a claim to name its evidence (`hooks/claim-guard.py`)
+
+If none fits, write the trigger down where the next session will read it, and say plainly
+that the mechanism is a note.
 
 **Genuinely one-off, so a ledger entry only.** Say so explicitly. Not every mistake
 deserves a mechanism, and inventing one for a singleton is its own failure.
@@ -93,7 +117,20 @@ grep -c '^CLASS: <letter>' ~/.claude/oops-ledger.md
 - **1st occurrence:** guard, or ledger entry.
 - **2nd:** the existing mechanism did not work. Fix the mechanism, not the instance.
 - **3rd or later:** stop and say out loud that the mechanism is failing, and why. Do not
-  add a fourth rule on top of three that are not firing.
+  add a fourth rule on top of three that are not firing. **From the third, the next
+  mechanism must be code**: a written rule has now failed three times.
+
+Whenever a mechanism for this class already existed, find out why it was silent before
+building another. Three answers came up in practice, and each needs a different fix:
+
+1. **It did not exist** for this shape. Build it.
+2. **It existed one size too small.** A rule written for `docker run` met the same trap via
+   `nohup` six days later. Widen it, and keep the old case as a test.
+3. **It existed and was never run.** A checker for exactly the failing shape sat unused in a
+   directory while the error recurred. Wire it into the path the work takes, not beside it.
+
+If the mechanism is itself a guard, it gets the loop too: replay it per rule, sample the
+hits, and pin every repair with a case that FAILS on the old version.
 
 ## Step 5: report in one short paragraph
 

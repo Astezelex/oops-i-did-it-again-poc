@@ -85,8 +85,20 @@ BASH_TRIGGERS = [
     ("command AFTER a data heredoc is still scored",
      "git commit -F - <<'EOF'\nprose\nEOF\n"
      + J("systemctl ", "is-active gdm gdm3 sddm lightdm"), "WARN"),
+    # ---- v2 rules, each on the shape of its incident
+    ("cron_timezone",          J("echo '0 10 * * * root /usr/local/bin/report' ", "> /etc/cron.d/report"), "WARN"),
+    ("cron_timezone remote",   J("scp report.cron host:", "/etc/cron.d/report"), "WARN"),
+    ("ha_storage_dump",        J("python3 -c \"import json;print(json.load(open('/config/", ".storage/core.config_entries')))\""), "WARN"),
+    ("push_over_state_file",   J("pct push 120 ", "/opt/monitor/nodes.json /opt/monitor/nodes.json"), "WARN"),
+    ("restore_from_memory",    J("sqlite3 app.db \"UPDATE task SET stage=NULL WHERE id=18\" ", "; ls app.db.bak-0907"), "WARN"),
+    ("server_identity",        J("docker run -d --rm --gpus all --network host ", "llama-server --port 8092"), "WARN"),
+    ("port_start_unchecked",   J("PORT=5049 nohup python3 -u ", "app.py > app.log 2>&1 &"), "WARN"),
+    ("runner_timeout_shorter", J("fleet run host1 ", "'timeout 90 bash /root/probe.sh'"), "deny"),
+    # ---- v2 repairs: shapes the v1 rules MISSED
+    ("settings overwrite (v1 missed it)", J("echo '{}' > ", "~/.claude/settings.json"), "WARN"),
+    ("command after an UNTERMINATED heredoc (v1 dropped it)",
+     "cat > /tmp/x.sh <<'EOF'\necho hi\n" + J("rm ", "-rf /", " "), "deny"),
 ]
-
 BASH_QUIET = [
     ("plain listing",          "ls -la /tmp"),
     ("plain git",              "git status"),
@@ -129,6 +141,21 @@ BASH_QUIET = [
     ("two units you own",      J("systemctl ", "is-active nginx postgresql")),
     ("pipefail present",       "set -o pipefail; bash test.sh | tail -5 || echo FAILED"),
     ("force-with-lease",       J("git ", "push --force-with-lease origin topic")),
+    # ---- v2: false positives found by replaying the rules over 8,513 real commands
+    ("runner: a LATER command's timeout is not this one's",
+     J("until timeout 15 fleet run a 'grep -q x /l && echo D' ", RURA, " grep -q D; do sleep 5; done; ",
+       "timeout 200 fleet run b -t 190 'bash /x.sh'")),
+    ("runner job detached",    J("fleet run host1 ", "'nohup timeout 900 bash /root/long.sh > /root/l.log 2>&1 &'")),
+    ("secret: verb and path in different commands", J("head -3 /var/log/app.log; ", "cut -d= -f1 /opt/app/.env")),
+    ("secret: shred is not a print", J("tail -5 run.log; ", "shred -u /root/.probe_pass")),
+    ("config: sed -n is a read", J("sed -n 1,40p ", "~/.claude/hooks/bash-guard.py 2>/dev/null")),
+    ("push to a staging path", J("scp cfg.yaml ", "host:/tmp/cfg-new.yaml")),
+    ("push to a .new name",    J("scp gen.yaml ", "host:/root/configuration.new.yaml")),
+    ("push with a backup",     J("ssh host cp -a /opt/m/nodes.json /opt/m/nodes.json.bak-1; ", "pct push 120 nodes.json /opt/m/nodes.json")),
+    ("restore read from backup", J("sqlite3 app.db.bak-0907 \"select stage from task where id=18\"")),
+    ("ha domains counted only", J("grep -oE '\"domain\": \"[a-z_]+\"' /config/", ".storage/core.config_entries ", RURA, " sort ", RURA, " uniq -c")),
+    ("server start with a port check", J("ss -ltn ", RURA, " grep -q :5049 || PORT=5049 nohup python3 app.py &")),
+    ("cron file read, not written", J("cat ", "/etc/cron.d/report")),
 ]
 
 FILE_TRIGGERS = [

@@ -102,6 +102,31 @@ is exactly what the audit found does not work.
 - [ ] `LESSONS.md` still applies, because it is about measurement and evidence, not about
       Claude Code.
 
+- [ ] You MEASURED the target's wire, not read it off this file. See the next section.
+
+## A real port: what measuring the target found
+
+In v2 these rules were run inside a different agent framework (Hermes Agent
+v0.20.6, build of 2026-09-24), through `hooks/guard.py`, WARN-only, first replayed over the
+agent's own 4,437 past shell commands. Two findings that no reading of this repo predicted,
+both verified in that build's code, both likely to apply to whatever you port to:
+
+1. **Its pre-call hook drops warnings.** For `pre_tool_call`, the response parser honours
+   only `block`, `modify` and `approve` (the last escalates to a human-approval prompt). A
+   `{"context": ...}` reply parses to nothing. So a WARN-only port is invisible there: either
+   put warnings on an event that carries context, promote chosen rules to block, or map WARN
+   to "ask a human". Check your harness's parser before you believe your warnings are shown.
+2. **Its remote runner had a different contract.** The agent's `fleet` wrapper defaulted to a
+   60 s session and had no `-t` flag at all (the limit came only from an environment
+   variable). The runner rule assumed 30 s and advised `-t`, which on that runner would have
+   become part of the remote command. The agent itself read its 33 blocks as "legitimate
+   work"; they were real kills at 60 s of jobs that allowed themselves 90 to 140 s. This is
+   why `RUNNER`, `RUNNER_LIMIT_FLAG` and `RUNNER_DEFAULT_LIMIT` in `bash-guard.py` are
+   configuration, and why a port must set them from the target's own code.
+
+Replay on that agent's history, for scale: 94.2% pass, 5.1% warn, 0.74% deny; the noisiest
+rule was `r_pipe_masks_exit_code` at 3.4%, and 15 of 21 rules never fired there.
+
 ## Language ports
 
 The rule functions in `hooks/bash-guard.py` are pure: string in, `(level, message)` or

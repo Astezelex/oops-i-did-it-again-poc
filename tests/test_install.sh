@@ -62,19 +62,19 @@ chk "other hook preserved" "$(count '/opt/other/mine\.py')" 1
 chk "unrelated key preserved" "$(count '"model"')" 1
 chk "absolute paths written" "$(count "$REPO/hooks/bash-guard\.py")" 1
 chk "no tilde in settings" "$(count 'python3 ~')" 0
-chk "three hooks wired" "$(count 'hooks/(bash|file|style)-guard\.py')" 3
+chk "four hooks wired" "$(count 'hooks/(bash|file|style|claim)-guard\.py')" 4
 chk "settings still valid json" \
     "$(python3 -c 'import json,sys;json.load(open(sys.argv[1]));print("yes")' "$SB/.claude/settings.json")" yes
 
 echo "== rerun is idempotent"
 ./install.sh > "$SB/install2.log" 2>&1
-chk "still exactly three" "$(count 'hooks/(bash|file|style)-guard\.py')" 3
+chk "still exactly four" "$(count 'hooks/(bash|file|style|claim)-guard\.py')" 4
 chk "reports nothing to change" "$(grep -c 'already correct' "$SB/install2.log")" 1
 
 echo "== uninstall"
 ./install.sh --uninstall > "$SB/uninstall.log" 2>&1
 chk "uninstall exits 0" "$?" 0
-chk "our hooks gone" "$(count 'hooks/(bash|file|style)-guard\.py')" 0
+chk "our hooks gone" "$(count 'hooks/(bash|file|style|claim)-guard\.py')" 0
 chk "other hook survived" "$(count '/opt/other/mine\.py')" 1
 chk "skill removed" "$(exists "$SB/.claude/skills/oops-i-did-it-again")" no
 

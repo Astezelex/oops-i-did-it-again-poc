@@ -34,6 +34,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /ABSOLUTE/PATH/TO/oops-i-did-it-again/hooks/claim-guard.py",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }

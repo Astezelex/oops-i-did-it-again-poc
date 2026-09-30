@@ -1,0 +1,148 @@
+{
+ "warnings_shown": {
+  "WARN": 524,
+  "WARN no longer fired by current rules": 153,
+  "BLOCK": 12,
+  "BLOCK no longer fired by current rules": 4
+ },
+ "rules": [
+  {
+   "rule": "r_stderr_discarded [WARN]",
+   "n": 108,
+   "moved_on": 81,
+   "repeated": 13,
+   "rewritten": 14,
+   "rewritten_of_decided": 0.519
+  },
+  {
+   "rule": "r_pipe_masks_exit_code [WARN]",
+   "n": 88,
+   "moved_on": 77,
+   "rewritten": 5,
+   "repeated": 6,
+   "rewritten_of_decided": 0.455
+  },
+  {
+   "rule": "r_guessed_unit_candidates [WARN]",
+   "n": 49,
+   "moved_on": 45,
+   "repeated": 3,
+   "rewritten": 1,
+   "rewritten_of_decided": 0.25
+  },
+  {
+   "rule": "r_empty_grep_as_absence [WARN]",
+   "n": 43,
+   "moved_on": 35,
+   "rewritten": 4,
+   "repeated": 4,
+   "rewritten_of_decided": 0.5
+  },
+  {
+   "rule": "r_runner_timeout_shorter [WARN]",
+   "n": 26,
+   "moved_on": 22,
+   "repeated": 2,
+   "rewritten": 2,
+   "rewritten_of_decided": 0.5
+  },
+  {
+   "rule": "r_push_over_state_file [WARN]",
+   "n": 24,
+   "moved_on": 23,
+   "rewritten": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_delete_before_verify [WARN]",
+   "n": 22,
+   "moved_on": 22,
+   "rewritten_of_decided": null
+  },
+  {
+   "rule": "r_arbitrary_row_from_listing [WARN]",
+   "n": 13,
+   "moved_on": 10,
+   "rewritten": 3,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_config_guard [WARN]",
+   "n": 8,
+   "moved_on": 7,
+   "rewritten": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_cron_timezone [WARN]",
+   "n": 7,
+   "moved_on": 7,
+   "rewritten_of_decided": null
+  },
+  {
+   "rule": "r_package_install [WARN]",
+   "n": 7,
+   "repeated": 2,
+   "rewritten": 2,
+   "moved_on": 3,
+   "rewritten_of_decided": 0.5
+  },
+  {
+   "rule": "r_runner_timeout_shorter [BLOCK]",
+   "n": 6,
+   "rewritten": 3,
+   "repeated": 2,
+   "moved_on": 1,
+   "rewritten_of_decided": 0.6
+  },
+  {
+   "rule": "r_restore_from_memory [WARN]",
+   "n": 3,
+   "rewritten": 2,
+   "moved_on": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_pipe_masks_exit_code [BLOCK]",
+   "n": 2,
+   "repeated": 2,
+   "rewritten_of_decided": 0.0
+  },
+  {
+   "rule": "r_delete_before_verify [BLOCK]",
+   "n": 1,
+   "rewritten": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_cron_timezone [BLOCK]",
+   "n": 1,
+   "rewritten": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_port_start_unchecked [WARN]",
+   "n": 1,
+   "moved_on": 1,
+   "rewritten_of_decided": null
+  },
+  {
+   "rule": "r_cuda_without_gpus [BLOCK]",
+   "n": 1,
+   "rewritten": 1,
+   "rewritten_of_decided": 1.0
+  },
+  {
+   "rule": "r_server_identity_unverified [WARN]",
+   "n": 1,
+   "moved_on": 1,
+   "rewritten_of_decided": null
+  },
+  {
+   "rule": "r_time_based_delete [WARN]",
+   "n": 1,
+   "moved_on": 1,
+   "rewritten_of_decided": null
+  }
+ ]
+}

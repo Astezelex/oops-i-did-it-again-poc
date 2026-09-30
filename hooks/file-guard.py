@@ -9,6 +9,11 @@ Three jobs:
   2. Refuse to write a literal credential into a file.
   3. Flag edits to the guardrail config itself, so the agent cannot silently disable it
      (community pattern: config-guard).
+  v2 (ledger 2026-09), all WARN:
+  4. BANNED-WORD: a word from your own ~/.claude/oops-banned-words.json in human-facing text.
+  5. PROBE: a probe script that can measure a stranger, or exit 0 after skipping its summary.
+  6. OWNER: a write to a file owned by another user, before that service is restarted.
+  7. CRON-TZ: cron lines written without re-deriving the host's timezone.
 
 Severity:
   BLOCK  shell SYNTAX errors, and literal secrets. Both are unambiguous.
@@ -96,6 +101,128 @@ def vendor_claims(text):
             continue
         out.append((v.group(1), ' '.join(z.split())[:110]))
     return out
+
+
+# ---------------------------------------------------------------- v2 checks (ledger 2026-09)
+
+# BANNED WORDS. Class J: a rule stated and acknowledged, then broken by habit. A word the
+# user had banned from the product came back in three new UI strings a week after the ban,
+# in a session that had read the ban. A written rule did not hold; a check on the write does.
+# Your list lives OUTSIDE the repo, because it is yours:
+#   ~/.claude/oops-banned-words.json
+#   [{"pattern": "\\bsimply\\b", "word": "simply", "why": "reads as condescending"}]
+# Only human-facing text is checked: quoted strings in code, and text nodes in templates.
+# WARN, not BLOCK: the same word can be a variable name, or a quote of the user's own words.
+BANNED_WORDS_FILE = os.path.expanduser("~/.claude/oops-banned-words.json")
+STRINGS = re.compile(r"'([^'\n]{3,200})'|\"([^\"\n]{3,200})\"|`([^`\n]{3,200})`")
+MARKUP = re.compile(r'<script.*?</script>|<style.*?</style>|{#.*?#}|{%.*?%}|{{.*?}}|<[^>]+>', re.S)
+
+
+def load_banned():
+    try:
+        with open(BANNED_WORDS_FILE, encoding="utf-8") as fh:
+            return [(re.compile(b["pattern"], re.I), b.get("word", b["pattern"]), b.get("why", ""))
+                    for b in json.load(fh)]
+    except Exception:
+        return []
+
+
+def banned_words(text, path="", banned=None):
+    banned = load_banned() if banned is None else banned
+    if not banned:
+        return []
+    pieces = [m.group(1) or m.group(2) or m.group(3) or "" for m in STRINGS.finditer(text)]
+    if path.endswith((".html", ".htm", ".jinja", ".j2")):
+        pieces.extend(MARKUP.sub(" ", text).split("."))
+    hits = []
+    for piece in pieces:
+        for rx, word, why in banned:
+            if rx.search(piece):
+                hits.append((word, " ".join(piece.split())[:90], why))
+                break
+    return hits
+
+
+# PROBE SCRIPTS. Class B + C. A probe that starts its own instance on a fixed port measured
+# an ORPHAN instance with a different database, and then exited 0 with seven red rows,
+# because an early `return` in main() skipped the summary that set the exit code. A probe
+# that can report green while measuring a stranger is theatre. Two checks, on files named
+# like probes only: a fixed port with no port check, and summary + sys.exit inside a main()
+# that can return early.
+PROBE_FILE = re.compile(r'(^|/)(probe|gate|smoke|check)[_.\-]', re.I)
+PROBE_FIXED_PORT = re.compile(r'(127\.0\.0\.1|localhost):\d{4,5}|\b\w*PORT\s*=\s*\d{4,5}|--port[= ]\d{4,5}')
+PROBE_PORT_CHECKED = re.compile(r'/proc/net/tcp|ss -ltn|lsof -i|Address already in use|EADDRINUSE'
+                                r'|netstat -ltn|pkill', re.I)
+PROBE_STARTS_SERVER = re.compile(r'Popen|nohup|waitress|uvicorn|gunicorn|app\.py|--remote-debugging-port')
+
+
+def probe_gaps(text, path=""):
+    if not PROBE_FILE.search(path or ""):
+        return []
+    gaps = []
+    if PROBE_FIXED_PORT.search(text) and PROBE_STARTS_SERVER.search(text) \
+            and not PROBE_PORT_CHECKED.search(text):
+        gaps.append("the probe starts its own instance on a FIXED port and never checks that "
+                    "the port was free, so it can measure an orphan instead of your code. Check "
+                    "the port before starting (/proc/net/tcp AND /proc/net/tcp6) and abort if taken.")
+    if re.search(r'\bdef main\s*\(', text):
+        # main()'s body ends at the first unindented line. The first version took
+        # "everything up to the next def", so a correct `sys.exit(...)` placed AFTER main()
+        # counted as inside it and the check punished exactly the fix it recommends.
+        after = text.split("def main", 1)[-1].split("\n")[1:]
+        body = []
+        for line in after:
+            if line.strip() and not line[:1].isspace():
+                break
+            body.append(line)
+        body = "\n" + "\n".join(body)
+        if re.search(r'\n\s{4,}return\b', body) and "sys.exit(" in body:
+            gaps.append("the summary and `sys.exit` live inside a main() that has an early "
+                        "`return`. A probe once exited 0 with seven red rows this way. Compute "
+                        "the exit code outside main(), and count that EVERY check actually ran.")
+    return gaps
+
+
+def owner_warning(path):
+    """Class F. An Edit tool rewrote a service's config as root; the service restarted and
+    could not read its own file. A write to a file owned by another user changes who can
+    read it, and a later restart is where that surfaces."""
+    try:
+        st = os.stat(path)
+    except OSError:
+        return None
+    if st.st_uid == os.geteuid():
+        return None
+    try:
+        import grp
+        import pwd
+        own = "%s:%s" % (pwd.getpwuid(st.st_uid).pw_name, grp.getgrgid(st.st_gid).gr_name)
+    except (KeyError, ImportError):
+        own = "%d:%d" % (st.st_uid, st.st_gid)
+    return ("OWNER: %s is owned by %s (mode %s), not by this process. The write may leave it "
+            "owned by you and unreadable to its service. Afterwards restore the owner "
+            "(`chown %s %s`) and prove the service user can read it BEFORE any restart."
+            % (os.path.basename(path), own, oct(st.st_mode & 0o777), own, path))
+
+
+CRON_PATH = re.compile(r'(/etc/cron\.d/|crontab|(^|/)cron[.\-_][^/]*$)')
+CRON_LINE = re.compile(r'^\s*[\d*/,\-]+\s+[\d*/,\-]+\s+[\d*/,\-]+\s+[\d*/,\-]+\s+[\d*/,\-]+\s+\S', re.M)
+
+
+def cron_warning(path, text):
+    """Class A. Cron jobs written for "UTC" on a host that ran Europe/Warsaw never fired
+    at the intended hour. Same incident as bash-guard's r_cron_timezone, other door."""
+    if not (CRON_PATH.search(path) and CRON_LINE.search(text)):
+        return None
+    try:
+        import time
+        z = os.path.realpath("/etc/localtime").split("zoneinfo/")[-1] + time.strftime(" (%Z %z)")
+    except OSError:
+        z = "?"
+    return ("CRON-TZ: cron schedule lines in %s. Cron fires in the system timezone of the host "
+            "it is INSTALLED on; this box = %s. If it goes to another host, probe that host's "
+            "zone first. Re-derive every hour field, and every UTC/local comment, against it."
+            % (os.path.basename(path), z))
 
 
 def emit(obj):
@@ -188,6 +315,22 @@ def main():
                 f"In the real case \"Gmail uses the template name to fill the subject line\" "
                 f"went into a handoff as fact and became a design lever; two real sends "
                 f"disproved it. Either probe it, or write INFERRED next to it.")
+
+    # v2 checks
+    bw = banned_words(text, path)
+    if bw:
+        shown = " | ".join('"%s"' % frag for _, frag, _ in bw[:3])
+        warns.append("BANNED-WORD: %d string(s) contain \"%s\": %s. %s Check whether it is "
+                     "text a person reads; a variable name or a quote of the user may stay."
+                     % (len(bw), bw[0][0], shown, bw[0][2]))
+    for gap in probe_gaps(text, path):
+        warns.append("PROBE: " + gap)
+    ow = owner_warning(path)
+    if ow:
+        warns.append(ow)
+    cw = cron_warning(path, text)
+    if cw:
+        warns.append(cw)
 
     if CONFIG_PATHS.search(path):
         warns.append("this edits the guardrail configuration itself. Legitimate, but it must "

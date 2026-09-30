@@ -174,7 +174,10 @@ def r_secret_exposure(cmd):
     # Replay caught this: `head -1 ~/.ssh/id_ed25519.pub` is ordinary work and the strict
     # token denied it. The \b matters: without it the \w+ backtracks to a shorter name and
     # the lookahead never sees ".pub".
-    if re.search(r'\b(cat|less|more|head|tail)\b[^\n|]*(\.env\b|/\.ssh/id_\w+\b(?!\.pub)|\.pem\b|\.\w*token\b|/\.\w*(pass|passwd|password|secret|secret_key|_key)\b|credentials\.json|\.aws/credentials|kubeconfig)', cmd):
+    # v2: `[^\n|;&]`, not `[^\n|]`. Replay 2026-10-01: `head -3 app.log; grep -c KEY .env`
+    # and `tail -5 run.log; shred -u ~/.probe_pass` were denied as prints of a secret. The
+    # reading verb belonged to a different command than the credential path.
+    if re.search(r'\b(cat|less|more|head|tail)\b[^\n|;&]*(\.env\b|/\.ssh/id_\w+\b(?!\.pub)|\.pem\b|\.\w*token\b|/\.\w*(pass|passwd|password|secret|secret_key|_key)\b|credentials\.json|\.aws/credentials|kubeconfig)', cmd):
         # The capture pattern is explicitly allowed: TOKEN=$(cat ~/.mytoken).
         # A command substitution captures into a variable; it never reaches the transcript.
         # Only a bare print of the file is a leak.
@@ -222,8 +225,16 @@ def r_config_guard(cmd):
     """Community: config-guard. An agent must not be able to quietly disable its own
     guardrails. WARN not BLOCK, because legitimately editing settings is part of the work,
     but it should never happen without being visible."""
-    if re.search(r'(sed|python3?|perl|tee|>|rm)\b[^\n]*(\.claude/settings|\.claude/hooks|bash-guard|file-guard)', cmd):
-        if not re.search(r'\b(cat|grep|ls|stat|md5sum|diff|cp\b|py_compile|json\.load)', cmd):
+    # v2, replay 2026-10-01: all 26 sampled hits of the first version were READS
+    # (`sed -n 1,40p .../bash-guard.py`), because any `sed` counted as a write and the verb
+    # could sit in a different command from the path. Worse, it MISSED the plain overwrite
+    # `echo '{}' > ~/.claude/settings.json`: `>\b` needs a word character after the `>`.
+    # Now: a real write verb (sed -i, perl -i, tee, rm, python) and the path inside ONE
+    # simple command, or a redirect whose target IS a guard file.
+    if re.search(r'(\bsed\b[^\n;&|]*\s-i|\bperl\b[^\n;&|]*\s-\w*i|\btee\b|\brm\b|\bpython3?\b)[^\n;&|]*'
+                 r'(\.claude/settings|\.claude/hooks|bash-guard|file-guard)'
+                 r'|>>?\s*\S*(\.claude/settings|\.claude/hooks/|bash-guard|file-guard)', cmd):
+        if not re.search(r'\b(cat|grep|ls|stat|md5sum|sha\d+sum|diff|cp\b|py_compile|json\.load)', cmd):
             return ("WARN", "this modifies the guardrail configuration itself (settings.json or "
                             "the hooks). That is legitimate work, but it must be visible and "
                             "backed up first, never a silent self-disable.")
@@ -314,12 +325,216 @@ def r_empty_grep_as_absence(cmd):
                     "and that zero was misread as 'the request never arrived'. Run the "
                     "positive control first: grep for a line you KNOW is there.")
 
+# ---------------------------------------------------------------- v2 rules (ledger 2026-09)
+# Seven rules added after v1, each from a logged incident between 2026-09-04 and 2026-09-30.
+# Every one was replayed against real history before it was wired, and two were narrowed
+# by that replay (see the comments inside r_runner_timeout_shorter).
+
+def local_tz():
+    """This box's cron timezone, read live. Cron schedules in the system zone."""
+    import os, time
+    try:
+        z = os.path.realpath("/etc/localtime").split("zoneinfo/")[-1]
+    except OSError:
+        z = "?"
+    return f"{z} ({time.strftime('%Z %z')})"
+
+
+CRON_WRITE = re.compile(
+    r'(>>?\s*\S*/etc/cron\.d/|\b(cp|install|mv|tee|rsync)\b[^\n;|&]*\s\S*/etc/cron\.d/|'
+    r'\bcrontab\s+(-e|-\s|\S+\.\w+)|>>?\s*/etc/crontab\b|'
+    r'\b(scp|rsync)\b[^\n;|&]*:\S*/etc/cron\.d/)')
+
+
+def r_cron_timezone(cmd):
+    """Class A. Two cron jobs were written for 10:00 because a project note said "system
+    clocks are UTC". The host ran Europe/Warsaw, so they fired two hours early, an hour gate
+    inside the script skipped them, and the morning report would never have been sent.
+    Cron fires in the zone of the host it is INSTALLED on. The zone is printed live."""
+    if not CRON_WRITE.search(cmd):
+        return None
+    remote = re.search(r'\b(scp|rsync)\b[^\n;|&]*:\S*/etc/cron', cmd)
+    where = ("the TARGET host: probe it first (`ssh <host> timedatectl`)"
+             if remote else f"this box = {local_tz()}")
+    return ("WARN", f"a cron schedule is being installed. Cron fires in the host's system "
+                    f"timezone; {where}. Re-derive every hour field, and every comment that "
+                    f"says UTC or local, against that zone.")
+
+
+_HA_SECRET_STORE = re.compile(
+    r'\.storage/(core\.config_entries|auth\b|auth_provider\.\w+|mobile_app\w*|http\.auth|onboarding)'
+    r'|/(config|ha/config)/secrets\.yaml\b')
+_HA_COUNT_ONLY = re.compile(r'(\bgrep -c\b|\buniq -c\b|\bwc\b|\bstat\b|\bls\b|\bsha\d+sum\b|\bmd5sum\b)')
+
+
+def r_ha_storage_dump(cmd):
+    """Class L (secret exposure while inspecting a store). Printing Home Assistant's config
+    entries "minus latitude and longitude" dumped a companion app's push token, secret and
+    webhook id into the transcript. The filter was a BLOCKLIST: drop two keys, print the
+    rest. HA's .storage holds live credentials. WARN, not BLOCK: reading one whitelisted
+    field, or counting domains, is ordinary work."""
+    if not _HA_SECRET_STORE.search(cmd):
+        return None
+    if _HA_COUNT_ONLY.search(cmd) and not re.search(r'\b(print|cat|json\.dump|grep -[A-Z]?[AB]\d*|sed -n)\b', cmd):
+        return None
+    return ("WARN", "this reads a Home Assistant store that holds live credentials (mobile_app "
+                    "push tokens and webhook ids, auth tokens, integration passwords). Print a "
+                    "WHITELIST of the keys you need, never 'everything except X'.")
+
+
+def r_push_over_state_file(cmd):
+    """Class E, third occurrence. A push of a node registry replaced the target's copy
+    wholesale. The target copy carried `"paused": true` for one node, set there and never
+    in the source. The node un-paused, the monitor paged it as DOWN, and a critical SMS went
+    out. A push over a config or state file overwrites state you have not read."""
+    m = re.search(r'\b(pct\s+push\s+\d+|scp\b[^|;]*?|rsync\b[^|;]*?|docker\s+cp|kubectl\s+cp)'
+                  r'\s+\S+\s+(?P<dst>[^\s;|&]+\.(json|db|sqlite3?|ya?ml|conf|toml|ini))\b', cmd)
+    if not m:
+        return None
+    # pulling, diffing or backing up the target in the same command is the right shape
+    if re.search(r'\bdiff\b|pct\s+pull|\.bak-|cp\s+-a', cmd):
+        return None
+    # A push to a staging name overwrites nothing live. Replay 2026-10-01: most hits of the
+    # first version were exactly this (`/tmp/cfg-new.yaml`, `configuration.new.yaml`).
+    if re.search(r'(^|:)/tmp/|[.\-_](new|staging|candidate|tmp)\.\w+$', m.group('dst')):
+        return None
+    return ("WARN", f"pushing over `{m.group('dst')}`: a state file on the target can carry keys "
+                    "the source does not. Pull it and diff first, merge the target-only keys, "
+                    "or back it up in the same command.")
+
+
+def r_restore_from_memory(cmd):
+    """Class A. "Restoring a task to its original shape" ran an UPDATE with a value typed
+    from memory. The task had never had that shape, and a backup taken 50 minutes earlier
+    sat in the same directory. A restore is a claim about a PAST value, so it needs a probe
+    of that value, and the probe is the backup that already exists."""
+    if not re.search(r'\bsqlite3\b[^\n;&|]*\bUPDATE\b[^\n]*\bSET\b', cmd, re.I):
+        return None
+    if not re.search(r'\.bak\b|\.bak-|\.backup\b|\.orig\b', cmd):
+        return None
+    # reading the backup in the same command is exactly the right shape
+    if re.search(r'\.(bak|backup|orig)[^\s"\']*["\']?\s*["\']?\s*select\b', cmd, re.I):
+        return None
+    return ("WARN", "UPDATE against a database that keeps backup copies. If this is a restore, "
+                    "the old value is a FACT to be read, not typed: select it from the newest "
+                    "backup first, then write what it says.")
+
+
+def r_server_identity_unverified(cmd):
+    """Class B. A benchmark script lost the `docker rm -f` teardown its predecessor had. The
+    smoke container kept holding the port under `--network host`, every later container
+    failed to bind and was erased by `--rm`, and the health probe was answered by the STALE
+    server. One arm scored 95 of 119 cases against the wrong model, under the right label.
+    An open port proves that SOMETHING answers there, never that it is yours."""
+    if not re.search(r'\bdocker\s+run\b', cmd):
+        return None
+    if not re.search(r'--network\s+host|-p\s+\d+:\d+|--publish\s+\d+:\d+', cmd):
+        return None
+    if re.search(r'docker\s+(rm|stop)\b', cmd):
+        return None
+    return ("WARN", "docker run binds a fixed port or --network host with no teardown of the "
+                    "previous container in the same command. If a stale server holds the port, "
+                    "your container exits, --rm erases it, and your health probe gets a 200 "
+                    "from the OLD process. Tear down first, verify YOUR container is running, "
+                    "then confirm identity from the server itself (/props, /v1/models).")
+
+
+_SERVER_START = re.compile(r'\bnohup\b|\bwaitress\b|\bgunicorn\b|\buvicorn\b'
+                           r'|\bflask\s+run\b|python3?\s+(-u\s+)?\S*app\.py|http\.server')
+_FIXED_PORT = re.compile(r'\b\w*PORT\s*=\s*\d{4,5}|--port[= ]\d{4,5}')
+_PORT_CHECKED = re.compile(r'\bpkill\b|\bkill\b|/proc/net/tcp|\bss\s+-[a-z]*l|lsof -i'
+                           r'|\bfuser\b|systemctl\s+(stop|restart)|Address already in use'
+                           r'|EADDRINUSE')
+
+
+def r_port_start_unchecked(cmd):
+    """Class B, same mechanism as r_server_identity_unverified, one size larger. That rule
+    covered `docker run` only; six days later the same trap arrived without docker. A probe
+    started `nohup python3 -u app.py` on a fixed port, an orphan from the night before held
+    it (over IPv6), the new process died on EADDRINUSE, and /health answered 200 from the
+    orphan, which had a different database. The probe reported two red rows against code
+    that was correct. A mechanism can exist and still be one size too small."""
+    if not _SERVER_START.search(cmd) or not _FIXED_PORT.search(cmd):
+        return None
+    if _PORT_CHECKED.search(cmd):
+        return None
+    return ("WARN", "this starts a server on a FIXED port with no teardown and no port check in "
+                    "the same command. If something already holds the port, your process dies on "
+                    "EADDRINUSE and every probe afterwards is answered by the stranger. Check the "
+                    "port first (/proc/net/tcp AND /proc/net/tcp6), then verify YOUR pid is alive.")
+
+
+# A remote-exec wrapper that kills its own session after a fixed time. `fleet run` is the
+# wrapper this rule was written for; replace these three values with your own wrapper's.
+RUNNER = re.compile(r"""(?P<pre>\btimeout\s+(?:-\S+\s+)*(?P<outer>\d+)s?\s+)?"""
+                    r"""\bfleet\s+run\s+(?P<args>[^'"\n]*)(?P<rest>[^\n]*)""")
+RUNNER_LIMIT_FLAG = re.compile(r'(?:^|\s)-t\s+(\d+)')
+RUNNER_DEFAULT_LIMIT = 30
+
+_INNER_TIMEOUT = re.compile(r'\btimeout\s+(?:-\S+\s+)*(\d+)s?\b')
+_LONG_REMOTE = re.compile(r'bash\s+\S+\.sh|\bnode\s+\S+\.js|python3?\s+\S+\.py|\bpytest\b'
+                          r'|\bdocker\s+(run|build|pull)|\bmake\b|llama-bench')
+_DETACHED = re.compile(r'\b(nohup|setsid|disown)\b|&\s*[\'"]?\s*(;|$)')
+
+
+def _remote_arg(rest):
+    """The first shell word after the runner and its options: the remote command itself.
+    Replay 2026-10-01: reading timeouts to the END OF THE LINE made 82 of 124 BLOCKs false,
+    e.g. `until timeout 15 fleet run a '...'; do sleep 5; done; timeout 20 fleet run b '...'`
+    read the second command's numbers as the first one's. Unparseable quoting falls back to
+    the old reading, so a parse failure errs toward a warning, never toward silence."""
+    import shlex
+    try:
+        lex = shlex.shlex(rest.lstrip(), posix=True, punctuation_chars=';&|')
+        lex.whitespace_split = True
+        tok = lex.get_token()
+        return tok if tok else rest
+    except ValueError:
+        return rest
+
+
+def r_runner_timeout_shorter(cmd):
+    """Class F + I. A remote-exec wrapper had ITS OWN session timeout (30 s by default).
+    Wrapping it in `timeout 420 <wrapper> ...`, or putting `timeout 240 bash test.sh` inside
+    it, extended nothing: the wrapper closed the session at 30 s and returned 124, while the
+    remote job KEPT RUNNING unsupervised. Three "hangs" were misdiagnosed that day, while the
+    tests went on writing test rows into a live database. A remote job allowed to outlive
+    its session is never what anyone wants: BLOCK. Detached jobs return at once: exempt."""
+    for m in RUNNER.finditer(cmd):
+        args, remote = m.group('args'), _remote_arg(m.group('rest'))
+        t = RUNNER_LIMIT_FLAG.search(args)
+        limit = int(t.group(1)) if t else RUNNER_DEFAULT_LIMIT
+        if _DETACHED.search(remote):
+            continue
+        # Replay 2026-09-11: counting the OUTER `timeout N <wrapper>` as the job's need
+        # blocked 39.5% of real commands; an outer timeout is usually a generous ceiling on
+        # a short command. Only a timeout INSIDE the remote command says what the job needs.
+        need = [int(x) for x in _INNER_TIMEOUT.findall(remote)]
+        if need and max(need) > limit:
+            return ("BLOCK", f"the runner closes its session after {limit}s, but the remote "
+                             f"command allows itself {max(need)}s. The job would keep running "
+                             "unsupervised and you would read exit 124 as a hang. Raise the "
+                             "runner's own limit, or detach the job (nohup ... > log 2>&1 &) "
+                             "and read the log.")
+        # WARN only when the remote side runs something that can be long. Without this
+        # narrowing the warning fired on 25.6% of commands and would have meant nothing.
+        if (not t and m.group('outer') and int(m.group('outer')) > limit
+                and _LONG_REMOTE.search(remote)):
+            return ("WARN", f"the outer `timeout {m.group('outer')}` does not extend the runner: "
+                            f"it closes the session after {limit}s on its own. If this job can "
+                            "take longer, raise the runner's own limit.")
+    return None
+
+
 RULES = (r_cuda_without_gpus, r_pipe_masks_exit_code, r_stderr_discarded,
          r_measurement_silenced,
          r_delete_before_verify, r_time_based_delete,
          r_catastrophic, r_secret_exposure, r_git_safety, r_config_guard, r_package_install,
          r_arbitrary_row_from_listing, r_guessed_unit_candidates,
-         r_empty_grep_as_absence)
+         r_empty_grep_as_absence,
+         # v2
+         r_cron_timezone, r_ha_storage_dump, r_push_over_state_file, r_restore_from_memory,
+         r_server_identity_unverified, r_port_start_unchecked, r_runner_timeout_shorter)
 
 
 # ---------------------------------------------------------------- input shaping
@@ -340,8 +555,19 @@ RULES = (r_cuda_without_gpus, r_pipe_masks_exit_code, r_stderr_discarded,
 # and warned on the very commit that shipped it. Twice.
 # ⛔ Named explicitly and kept short. Everything absent from this list stays in scope,
 # because `bash <<EOF`, `ssh host <<EOF` and `python3 - <<PY` do execute their bodies.
+#
+# ⚖ v2 measured the cost of that choice, and left it as a switch. A program fed to an
+# interpreter on stdin (`python3 - <<'PY'`) is source in ANOTHER language, and shell-shape
+# rules match its string literals. Replay over 8,516 real commands, 2026-10-01: treating
+# those bodies as content removed 36 hits; every BLOCK among them was a Python program
+# whose source quoted a dangerous command as data (mostly programs editing this guard).
+# The price is the one named above: a real `os.system(...)` inside such a body would no
+# longer be seen. Default False keeps v1's behaviour. Set True if your history looks
+# like that replay, and measure it first with hooks/replay.py.
+STRIP_INTERPRETER_HEREDOCS = False
+_INTERPRETER = r'|(python3?|node|perl|ruby)\s+-(?=[\s<])' if STRIP_INTERPRETER_HEREDOCS else ''
 HEREDOC_AS_DATA = re.compile(
-    r'\b(git\b[^\n]*?\b(commit|tag|notes)\b[^\n]*-F\s*-|tee\b|mail\b|sendmail\b)'
+    r'\b(git\b[^\n]*?\b(commit|tag|notes)\b[^\n]*-F\s*-|tee\b|mail\b|sendmail\b' + _INTERPRETER + r')'
     r'[^\n]*<<-?\s*[\'"]?([A-Za-z_][A-Za-z0-9_]*)[\'"]?[^\n]*\n')
 
 HEREDOC_TO_FILE = re.compile(
@@ -365,7 +591,11 @@ def strip_written_heredocs(cmd):
         koniec = re.search(r'^\s*%s\s*$' % re.escape(znacznik),
                            cmd[m.end():], re.M)
         if not koniec:
-            break                     # unterminated: leave the rest in scope
+            # unterminated: leave the rest in scope. v1 said this and did the opposite: the
+            # `break` dropped everything after the opener, so `cat > f <<EOF` followed by an
+            # `rm -rf /` and no terminator was never scored. Found by a v2 control case.
+            out.append(cmd[m.end():])
+            break
         pos = m.end() + koniec.end()
     return ''.join(out)
 

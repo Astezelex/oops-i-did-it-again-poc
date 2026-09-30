@@ -93,6 +93,7 @@ WANT = [
     ("PreToolUse", "Bash",                 "bash-guard.py",  10, "bash-guard"),
     ("PreToolUse", "Write|Edit|MultiEdit", "file-guard.py",  20, "file-guard"),
     ("Stop",       None,                   "style-guard.py", 10, None),
+    ("Stop",       None,                   "claim-guard.py", 10, None),
 ]
 
 def cmd_for(script):
